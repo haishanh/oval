@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: oklch(0.96 0 0);
+    --foreground: oklch(0.145 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+
+    --bo: hsl(210deg 14% 83%);
+    --bo-sidebar: hsl(0deg 0% 86%);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+
+    --bo: #30363d;
+    --bo-sidebar: hsl(0deg 0% 22%);
+  }
+}
+
+@theme {
+  --animate-wiggle: wiggle 3s linear infinite;
+  --perspective: perspective(600px);
+  --rotate-x: rotateX(-1deg);
+  --translate-y: translateY(-5%);
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: rotateZ(-2.5deg) var(--translate-y) var(--perspective) var(--rotate-x);
+    }
+    25%,
+    75% {
+      transform: rotateZ(0deg) translateY(0) var(--perspective) var(--rotate-x);
+    }
+    50% {
+      transform: rotateZ(2.5deg) var(--translate-y) var(--perspective) var(--rotate-x);
+    }
+  }
+
+  --animate-spin3: spin 3s linear infinite;
+
+  /* -- color -- */
+
+  --color-oval-green: oklch(0.65 0.2 137.3);
+  --color-arc-blue: #2f39ff;
+
+  --color-neutral-350: oklch(79% 0 0);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-ring: var(--color-oval-green);
+  --color-input: var(--input);
+
+  --color-bo: var(--bo);
+  --color-bo-sidebar: var(--bo-sidebar);
+}
+
+body {
+  text-autospace: normal;
+}
+
+.a1 {
+  background: conic-gradient(
+    var(--color-blue-100) 14deg,
+    var(--color-blue-200) 14deg 28deg,
+    var(--color-blue-300) 28deg 42deg,
+    var(--color-blue-400) 42deg 56deg,
+    var(--color-blue-500) 56deg 70deg,
+    var(--color-blue-600) 70deg 84deg,
+    var(--color-blue-700) 84deg 96deg,
+    var(--color-blue-600) 96deg 110deg,
+    var(--color-blue-500) 110deg 124deg,
+    var(--color-blue-400) 124deg 138deg,
+    var(--color-blue-300) 138deg 152deg,
+    var(--color-blue-200) 152deg 166deg,
+    var(--color-blue-100) 166deg 180deg,
+    var(--color-red-100) 180deg 194deg,
+    var(--color-red-200) 194deg 208deg,
+    var(--color-red-300) 208deg 222deg,
+    var(--color-red-400) 222deg 236deg,
+    var(--color-red-500) 236deg 250deg,
+    var(--color-red-600) 250deg 264deg,
+    var(--color-red-700) 264deg 276deg,
+    var(--color-red-600) 276deg 290deg,
+    var(--color-red-500) 290deg 304deg,
+    var(--color-red-400) 304deg 318deg,
+    var(--color-red-300) 318deg 332deg,
+    var(--color-red-200) 332deg 346deg,
+    var(--color-red-100) 346deg
+  );
+}
+
+.g1 {
+  top: 10%;
+  left: 50%;
+  background: radial-gradient(oklch(0.505 0.213 27.518 / 0.8), transparent 100%);
+  transform-origin: 15% 20%;
+}
+
+.g2 {
+  top: 10%;
+  right: 50%;
+  background: radial-gradient(oklch(0.488 0.243 264.376 / 0.9), transparent 100%);
+  transform-origin: 100% 20%;
+}

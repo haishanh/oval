@@ -1,0 +1,36 @@
+```bash
+bun dev
+```
+
+__Reference__
+
+- [WXT docs - Environment Variables](https://wxt.dev/guide/essentials/config/environment-variables.html)
+
+Gemini Errors
+
+Invalid API Key
+
+```json
+{
+  "error": {
+    "code": 400,
+    "message": "API key not valid. Please pass a valid API key.",
+    "status": "INVALID_ARGUMENT",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "API_KEY_INVALID",
+        "domain": "googleapis.com",
+        "metadata": {
+          "service": "generativelanguage.googleapis.com"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+        "locale": "en-US",
+        "message": "API key not valid. Please pass a valid API key."
+      }
+    ]
+  }
+}
+```

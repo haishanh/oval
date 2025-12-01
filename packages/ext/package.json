@@ -1,0 +1,35 @@
+{
+  "name": "ext",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@lucide/svelte": "0.562.0",
+    "@tailwindcss/vite": "4.1.18",
+    "@tanstack/svelte-query": "6.0.11",
+    "@wxt-dev/module-svelte": "2.0.4",
+    "@wxt-dev/webextension-polyfill": "^1.0.0",
+    "defuddle": "0.6.6",
+    "svelte": "5.46.1",
+    "tailwindcss": "^4.1.12",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "prettier": "3.7.4",
+    "prettier-plugin-svelte": "3.4.1",
+    "prettier-plugin-tailwindcss": "0.7.2",
+    "sass-embedded": "1.97.1",
+    "typescript": "^5.8.3",
+    "wxt": "^0.20.13"
+  }
+}
