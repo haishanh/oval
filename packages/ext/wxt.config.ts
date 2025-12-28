@@ -20,7 +20,7 @@ export default defineConfig({
     name: 'Oval',
     description: 'Oval - summarize web page with AI',
     action: {
-      default_title: 'Curve',
+      default_title: 'Oval',
     },
     permissions: ['activeTab', 'storage'],
     icons: {
