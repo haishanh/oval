@@ -6,6 +6,7 @@
   import { RadioGroup } from 'bits-ui';
   import Button from '../base/Button.svelte';
   import type { TProviderOptions } from './schema';
+  import { DEFAULT_MODEL_GEMINI, DEFAULT_MODEL_GROK } from './constant';
 
   type Props = {
     value: TProviderOptions;
@@ -20,33 +21,35 @@
 {#if value.providers.length > 0}
   <RadioGroup.Root class="pt-4" value={value.activeKey} onValueChange={onSelectActiveProvider}>
     <div class="group flex flex-col items-center gap-2 text-foreground transition-all select-none">
-      {#each value.providers as provider (provider.key)}
+      {#each value.providers as item (item.key)}
+        {@const model =
+          item.model ||
+          (item.provider === 'Google Gemini' ? DEFAULT_MODEL_GEMINI : DEFAULT_MODEL_GROK)}
         <div class="flex w-full items-center gap-2">
           <RadioGroup.Item
-            value={provider.key}
+            value={item.key}
             class="flex w-full grow cursor-pointer gap-3 rounded-[10px] border border-bo p-2.5 hover:bg-neutral-100 data-[state=checked]:border-oval-green hover:dark:bg-neutral-800"
           >
             <span class="inline-flex items-center justify-center">
-              {#if value.activeKey === provider.key}
+              {#if value.activeKey === item.key}
                 <CircleCheckBigIcon size={18} class="text-oval-green" />
               {:else}
                 <CircleIcon size={18} class="text-neutral-350 dark:text-neutral-600" />
               {/if}
             </span>
             <div class="flex flex-col items-start gap-1">
-              <h3>{provider.provider}</h3>
-              <span class="text-sm">{provider.apiBaseUrl}</span>
+              <h3>{item.provider}</h3>
+              <span class="text-sm text-muted-foreground">{model}</span>
+              {#if item.apiBaseUrl}
+                <span class="text-sm text-muted-foreground">{item.apiBaseUrl}</span>
+              {/if}
               <span class="text-sm text-muted-foreground"
-                >{new Date(provider.createdAt).toLocaleString()}</span
+                >{new Date(item.createdAt).toLocaleString()}</span
               >
             </div>
           </RadioGroup.Item>
           <div class="flex items-center gap-1">
-            <!-- <Button iconOnly>
-              <SquarePenIcon size={13} />
-              <span class="sr-only">Edit</span>
-            </Button> -->
-            <Button iconOnly onclick={() => onDeleteProvider(provider.key)}>
+            <Button iconOnly onclick={() => onDeleteProvider(item.key)}>
               <TrashIcon size={13} />
               <span class="sr-only">Delete</span>
             </Button>

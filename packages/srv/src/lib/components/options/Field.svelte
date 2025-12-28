@@ -31,7 +31,7 @@
       ]}
       {id}
       {...rest}
-      type={hidden ? 'password' : type}
+      type={kind === 'hidden' && hidden ? 'password' : type}
     />
     {#if kind === 'hidden'}
       <span class="absolute top-0 right-0 bottom-0 inline-flex items-center justify-center">
