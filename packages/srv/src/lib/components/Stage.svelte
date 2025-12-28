@@ -32,7 +32,7 @@
   }: Props = $props();
 </script>
 
-<div class="fixed inset-0 z-9999 bg-white/20 backdrop-blur-lg">
+<div class="fixed inset-0 z-2147483647 bg-white/20 backdrop-blur-lg">
   <div class="a1 absolute inset-0"></div>
   <div
     class={[
