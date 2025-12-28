@@ -34,7 +34,6 @@ export class SummaryService {
       'Provide the summary only in JSON format, according to the `Response` schema below.',
       '```',
       'interface Response {',
-      '    blocked: boolean // Does this page ask the user to enable Javascript, sign in, or complete a security check before accessing the content?',
       "    details: Detail[] // Ideally 4-7, but no less than three key points, opinions, solutions, items, instructions, or insights. Don't summarize what's already covered by the webpage title.",
       '}',
       'interface Detail {',
