@@ -53,6 +53,14 @@
     ]}
   ></div>
   <div class="absolute inset-0 overflow-y-auto">
+    <div class="fixed top-5 right-6 text-neutral-300">
+      <button
+        onclick={() => onClickClose?.()}
+        class="cursor-pointer rounded-full p-2 hover:bg-neutral-400 active:scale-95 active:bg-neutral-500"
+        ><XIcon size={18} />
+      </button>
+    </div>
+
     <div class="flex justify-center pt-14 pb-8">
       <div
         class={[
@@ -69,13 +77,6 @@
         {/if}
         <img class="block h-auto max-w-full rounded-t-2xl" src={imgSrc} alt="Screenshot" />
       </div>
-    </div>
-    <div class="fixed top-5 right-6 text-neutral-300">
-      <button
-        onclick={() => onClickClose?.()}
-        class="cursor-pointer rounded-full p-2 hover:bg-neutral-400 active:scale-95 active:bg-neutral-500"
-        ><XIcon size={18} />
-      </button>
     </div>
     <div class="relative">
       <div class="mx-auto max-w-xl px-3 pb-6 text-neutral-300">
