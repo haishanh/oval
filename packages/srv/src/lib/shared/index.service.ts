@@ -2,3 +2,4 @@
 // Without this index file we may end up with duplicate indentifiers
 export { SummaryService } from './summary.service';
 export { GeminiService } from './gemini.service';
+export { OvalService } from './oval.service';

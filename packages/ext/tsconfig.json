@@ -3,10 +3,10 @@
   "compilerOptions": {
     "useDefineForClassFields": true,
     "paths": {
-      "$lib": ["./src/srvlib"],
-      "$lib/*": ["./src/srvlib/*"],
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"],
       "@": ["./src"],
-      "@/*": ["./src/*"]
-    }
-  }
+      "@/*": ["./src/*"],
+    },
+  },
 }

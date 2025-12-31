@@ -1,7 +1,7 @@
 import { type Browser, browser, defineBackground } from '#imports';
 import { Message, MessageType } from '@/utils/message';
 import * as z from 'zod';
-import { GeminiService, SummaryService } from '$lib/shared/index.service';
+import { GeminiService, SummaryService, OvalService } from '$lib/shared/index.service';
 import { log } from '@/utils/logger';
 import { generate } from '$lib/shared/mock.util';
 import { sleep } from '$lib/shared/common.util';
@@ -10,8 +10,7 @@ import { PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK } from '$lib/components/optio
 import { STORAGE_KEY } from '@/utils/constant';
 import { GrokService } from '$lib/shared/grok.service';
 
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const geminiSvc = new GeminiService({ apiKey });
+const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
 
 async function getActiveTab() {
   const [tab] = await browser.tabs.query({
@@ -45,31 +44,24 @@ function generateMockSummary() {
 }
 
 async function getLlmSvc(parsed: TProviderOptions | undefined) {
-  if (parsed) {
-    if (typeof parsed.activeKey === 'string' && parsed.activeKey !== '') {
-      for (const provider of parsed.providers) {
-        if (provider.key === parsed.activeKey) {
-          if (provider.provider === PROVIDER_GOOGLE_GEMINI) {
-            return new GeminiService({
-              apiKey: provider.apiKey,
-              baseUrl: provider.apiBaseUrl,
-            });
-          } else if (provider.provider === PROVIDER_XAI_GROK) {
-            return new GrokService({
-              apiKey: provider.apiKey,
-              baseUrl: provider.apiBaseUrl,
-            });
-          }
-        }
+  if (!parsed) return;
+  if (typeof parsed.activeKey !== 'string' || parsed.activeKey === '') return;
+
+  for (const provider of parsed.providers) {
+    if (provider.key === parsed.activeKey) {
+      if (provider.provider === PROVIDER_GOOGLE_GEMINI) {
+        return new GeminiService({
+          apiKey: provider.apiKey,
+          baseUrl: provider.apiBaseUrl,
+        });
+      } else if (provider.provider === PROVIDER_XAI_GROK) {
+        return new GrokService({
+          apiKey: provider.apiKey,
+          baseUrl: provider.apiBaseUrl,
+        });
       }
     }
   }
-  return geminiSvc;
-}
-
-async function getSummarySvc(conf: TProviderOptions | undefined) {
-  const llmSvc = await getLlmSvc(conf);
-  return new SummaryService(llmSvc);
 }
 
 async function getTargetLanguage(t: string | undefined) {
@@ -93,10 +85,27 @@ async function handleArticleMessage(
   const result = OvalExtOptionsSchema.safeParse(stored);
   const parsed = result.success ? result.data : undefined;
   const lang = await getTargetLanguage(parsed?.targetLanguage);
-  const ai =
-    mock === '1'
-      ? generateMockSummary()
-      : (await getSummarySvc(parsed?.llmProvider)).summarize(article, lang);
+  let ai: AsyncIterable<string> | undefined;
+  if (mock === '1') {
+    ai = generateMockSummary();
+  } else {
+    const llmSvc = await getLlmSvc(parsed?.llmProvider);
+    if (llmSvc) {
+      ai = new SummaryService(llmSvc).summarize(article, lang);
+    }
+  }
+
+  if (!ai) {
+    // fallback to our own
+    const ovalSvc = new OvalService({ apiKey: ovalApiKey });
+    const res = await ovalSvc.generate({
+      content: article.content,
+      title: article.title,
+      lang,
+    });
+    ai = OvalService.createAsyncIterableTextStreamFromResponse(res)
+  }
+
 
   for await (const text of ai) {
     port.postMessage({

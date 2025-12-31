@@ -12,7 +12,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     resolve: {
       alias: {
-        $lib: path.resolve(__dirname, './src/srvlib'),
+        $lib: path.resolve(__dirname, './src/lib'),
       },
     },
   }),
