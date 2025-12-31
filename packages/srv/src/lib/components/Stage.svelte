@@ -5,6 +5,7 @@
   import { extractMarkdownCodeBlockContent } from '$lib/shared/string.util';
   import { summa, isLoading } from './summa.svelte';
   import { XIcon } from '@lucide/svelte';
+  import OvalScrollArea from './base/OvalScrollArea.svelte';
 
   function parseJson(input: string) {
     try {
@@ -52,7 +53,13 @@
       isLoading.value || animate ? 'bg-black/10' : 'bg-black/70'
     ]}
   ></div>
-  <div class="absolute inset-0 overflow-y-auto">
+
+  <OvalScrollArea
+    orientation="vertical"
+    type="scroll"
+    class="absolute! inset-0"
+    viewportClasses="h-full"
+  >
     <div class="fixed top-5 right-6 text-neutral-300">
       <button
         onclick={() => onClickClose?.()}
@@ -89,5 +96,5 @@
         {/if}
       </div>
     </div>
-  </div>
+  </OvalScrollArea>
 </div>
