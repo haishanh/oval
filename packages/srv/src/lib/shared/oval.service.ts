@@ -18,7 +18,7 @@ export class OvalService {
     const prefixUrl = opts.baseUrl || DEFAULT_BASE_URL;
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${opts.apiKey}`,
+      'x-api-key': opts.apiKey,
     };
     this.ky = ky.create({ prefixUrl, headers, timeout: opts.timeout || DEFAULT_TIMEOUT });
   }
