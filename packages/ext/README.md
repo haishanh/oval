@@ -1,4 +1,8 @@
-```bash
+## Development
+
+Start dev
+
+```sh
 bun dev
 ```
 
