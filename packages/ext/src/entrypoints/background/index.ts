@@ -9,6 +9,7 @@ import { OvalExtOptionsSchema, TProviderOptions } from '$lib/components/options/
 import { PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK } from '$lib/components/options/constant';
 import { STORAGE_KEY } from '@/utils/constant';
 import { GrokService } from '$lib/shared/grok.service';
+import { HTTPError } from 'ky';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
 
@@ -103,14 +104,81 @@ async function handleArticleMessage(
       title: article.title,
       lang,
     });
-    ai = OvalService.createAsyncIterableTextStreamFromResponse(res)
+    ai = OvalService.createAsyncIterableTextStreamFromResponse(res);
   }
 
+  try {
+    for await (const text of ai) {
+      port.postMessage({
+        type: MessageType.TextChunk,
+        payload: { text },
+      } satisfies z.infer<typeof Message>);
+    }
+  } catch (e) {
+    console.log(e);
 
-  for await (const text of ai) {
+    let message = '';
+
+    if (e instanceof TypeError) {
+      message = e.message;
+    } else if (e instanceof HTTPError) {
+      // Example Gemini error:
+      //
+      // {
+      //   "error": {
+      //     "code": 400,
+      //     "message": "API key not valid. Please pass a valid API key.",
+      //     "status": "INVALID_ARGUMENT",
+      //     "details": [
+      //       {
+      //         "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+      //         "reason": "API_KEY_INVALID",
+      //         "domain": "googleapis.com",
+      //         "metadata": {
+      //           "service": "generativelanguage.googleapis.com"
+      //         }
+      //       },
+      //       {
+      //         "@type": "type.googleapis.com/google.rpc.LocalizedMessage",
+      //         "locale": "en-US",
+      //         "message": "API key not valid. Please pass a valid API key."
+      //       }
+      //     ]
+      //   }
+      // }
+
+      // Example Grok error:
+      //
+      // {
+      //     "code": "Client specified an invalid argument",
+      //     "error": "Incorrect API key provided: ***. You can obtain an API key from https://console.x.ai."
+      // }
+
+      type GeminiErrorResponse = {
+        error?: { code: number; message: string; status: string };
+      };
+      type GrokErrorResponse = {
+        code: string;
+        error: string;
+      };
+
+      const payload = (await e.response.json().catch(() => ({}))) as
+        | GeminiErrorResponse
+        | GrokErrorResponse;
+
+      if (typeof payload?.error === 'string') {
+        message = payload.error;
+      } else {
+        const m = payload?.error?.message;
+        if (m) message = m;
+      }
+    }
+
+    if (message === '') message = 'Something went wrong';
+
     port.postMessage({
-      type: MessageType.TextChunk,
-      payload: { text },
+      type: MessageType.SummarizeError,
+      payload: { message },
     } satisfies z.infer<typeof Message>);
   }
 }
@@ -157,11 +225,6 @@ export default defineBackground(() => {
         throw new Error(`Unknown message type: ${m.type}`);
       }
     }
-  });
-
-  browser.i18n.getAcceptLanguages().then((langs) => {
-    console.log({ langs });
-    // ['en-US', 'zh-CN', 'zh', 'en']
   });
 
   // browser.action.onClicked.addListener(() => {});

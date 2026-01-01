@@ -39,13 +39,16 @@ export class GeminiService {
     apiKey: string;
     /** Base URL */
     baseUrl?: string;
+    timeout?: number,
   }) {
     const prefixUrl = opts.baseUrl || DEFAULT_BASE_URL;
+    const timeout = opts.timeout || 70000;
+
     const headers = {
       'Content-Type': 'application/json',
       'x-goog-api-key': opts.apiKey
     };
-    this.ky = ky.create({ prefixUrl, headers });
+    this.ky = ky.create({ prefixUrl, headers, timeout });
   }
 
   static buildGenerateContentRequestBody(text: string, instruction?: string) {
@@ -53,8 +56,8 @@ export class GeminiService {
     return {
       ...(instruction
         ? {
-            system_instruction: { parts: [{ text: instruction }] }
-          }
+          system_instruction: { parts: [{ text: instruction }] }
+        }
         : undefined),
       contents,
       generationConfig: {
@@ -66,20 +69,12 @@ export class GeminiService {
   async generateContent(json: unknown, model = 'gemini-2.5-flash-lite') {
     const endpoint = `v1beta/models/${model}:generateContent`;
     return await this.ky
-      .post<GeminiResponse>(endpoint, {
-        json,
-        timeout: 70000
-      })
-      .json();
+      .post<GeminiResponse>(endpoint, { json }).json();
   }
 
   async streamGenerateContent(json: unknown, model = 'gemini-2.5-flash-lite') {
     const endpoint = `v1beta/models/${model}:streamGenerateContent`;
-    return await this.ky.post(endpoint, {
-      json,
-      searchParams: { alt: 'sse' },
-      timeout: 70000
-    });
+    return await this.ky.post(endpoint, { json, searchParams: { alt: 'sse' } });
   }
 
   static createAsyncIterableTextStreamFromResponse(res: Response): AsyncIterable<string> {
@@ -105,7 +100,6 @@ export class GeminiService {
 function parseDataLine(ln: string) {
   try {
     return JSON.parse(ln.substring(6)) as GeminiStreamData;
-    // return json.candidates?.[0]?.content?.parts[0]?.text;
   } catch (e) {
     console.error(e);
     console.log(`Unable to parse [${ln.substring(6)}] (content in []) as JSON`);

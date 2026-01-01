@@ -14,7 +14,7 @@ import App from './App.svelte';
 import { mount, unmount } from 'svelte';
 import { screenshot, title } from './state.svelte';
 import { log } from '@/utils/logger';
-import { summa, isLoading } from '$lib/components/summa.svelte';
+import { summa, isLoading, summarizeError } from '$lib/components/summa.svelte';
 
 const restore = createRestore();
 
@@ -102,6 +102,12 @@ function armListeners() {
           if (isLoading.value === true) isLoading.value = false;
           summa.text += msg.payload.text;
           // log.debug(msg.payload.text);
+          break;
+        }
+
+        case MessageType.SummarizeError: {
+          if (isLoading.value === true) isLoading.value = false;
+          summarizeError.current = msg.payload.message;
           break;
         }
 

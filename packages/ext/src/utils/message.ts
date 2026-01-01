@@ -5,6 +5,7 @@ export const MessageType = {
   Screenshot: 'Screenshot',
   TextChunk: 'TextChunk',
   Article: 'Article',
+  SummarizeError: 'SummarizeError',
 } as const;
 
 export const Message = z.discriminatedUnion('type', [
@@ -25,5 +26,11 @@ export const Message = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal(MessageType.Summarize),
+  }),
+  z.object({
+    type: z.literal(MessageType.SummarizeError),
+    payload: z.object({
+      message: z.string(),
+    }),
   }),
 ]);

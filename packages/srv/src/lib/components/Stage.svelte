@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { parse as parsePartialJson } from 'partial-json';
-
-  import Summary from './Summary.svelte';
   import { extractMarkdownCodeBlockContent } from '$lib/shared/string.util';
-  import { summa, isLoading } from './summa.svelte';
-  import { XIcon } from '@lucide/svelte';
+  import Summary from './Summary.svelte';
   import OvalScrollArea from './base/OvalScrollArea.svelte';
+  import { summa, isLoading, summarizeError } from './summa.svelte';
+  import { XIcon } from '@lucide/svelte';
+  import { parse as parsePartialJson } from 'partial-json';
   import type { Attachment } from 'svelte/attachments';
 
   function parseJson(input: string) {
@@ -30,7 +29,7 @@
     imgSrc = 'https://unsplash.it/1200/919?image=519',
     title = '',
     border = false,
-    animate = false
+    animate = false,
   }: Props = $props();
 
   let showCloseText = $state(false);
@@ -43,31 +42,16 @@
 
 <div class="fixed inset-0 z-2147483647 bg-white/20 backdrop-blur-lg">
   <div class="a1 absolute inset-0"></div>
-  <div
-    class={[
-      'g1 absolute h-350 w-350 rounded-full',
-      isLoading.value || animate ? 'animate-spin3' : ''
-    ]}
-  ></div>
-  <div
-    class={[
-      'g2 absolute h-400 w-400 rounded-full',
-      isLoading.value || animate ? 'animate-spin3' : ''
-    ]}
-  ></div>
+  <div class={['g1 absolute h-350 w-350 rounded-full', isLoading.value || animate ? 'animate-spin3' : '']}></div>
+  <div class={['g2 absolute h-400 w-400 rounded-full', isLoading.value || animate ? 'animate-spin3' : '']}></div>
   <div
     class={[
       'absolute inset-0 bg-black/50 backdrop-blur-[140px] transition delay-50 duration-500',
-      isLoading.value || animate ? 'bg-black/10' : 'bg-black/70'
+      isLoading.value || animate ? 'bg-black/10' : 'bg-black/70',
     ]}
   ></div>
 
-  <OvalScrollArea
-    orientation="vertical"
-    type="scroll"
-    class="absolute! inset-0"
-    viewportClasses="h-full"
-  >
+  <OvalScrollArea orientation="vertical" type="scroll" class="absolute! inset-0" viewportClasses="h-full">
     <div class="fixed top-5 right-6 text-neutral-300">
       <button
         data-oval-close
@@ -80,9 +64,7 @@
         class="group inline-flex h-9 cursor-pointer items-center justify-center gap-1 rounded-full px-2 hover:bg-neutral-400 hover:text-neutral-900 active:scale-95 active:bg-neutral-300"
       >
         {#if showCloseText}
-          <span class="text-sm leading-none text-muted-foreground group-hover:text-neutral-900"
-            >close</span
-          >
+          <span class="text-sm leading-none text-muted-foreground group-hover:text-neutral-900">close</span>
         {:else}
           <span
             class="inline-flex h-5.5 items-center rounded-full border px-2 text-sm text-muted-foreground group-hover:text-neutral-900"
@@ -99,7 +81,7 @@
           'h-auto w-md overflow-hidden drop-shadow-xl/50 transition-transform',
           { 'scale-75': isLoading.value || animate },
           { 'animate-wiggle': isLoading.value || animate },
-          { 'border border-amber-500': border }
+          { 'border border-amber-500': border },
         ]}
       >
         {#if title}
@@ -114,6 +96,10 @@
       <div class="mx-auto max-w-xl px-3 pb-6 text-neutral-300">
         {#if isLoading.value}
           <p class="text-center text-lg text-neutral-100/60">Summarizing for you...</p>
+        {:else if summarizeError.current.length > 0}
+          <div class="py-5">
+            <p class="text-center text-lg text-red-400/90">{summarizeError.current}</p>
+          </div>
         {:else if summa.text.length > 0}
           {@const json = extractMarkdownCodeBlockContent(summa.text as unknown as string)}
           {@const summary = parseJson(json)}
