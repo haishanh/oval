@@ -6,6 +6,7 @@
   import { summa, isLoading } from './summa.svelte';
   import { XIcon } from '@lucide/svelte';
   import OvalScrollArea from './base/OvalScrollArea.svelte';
+  import type { Attachment } from 'svelte/attachments';
 
   function parseJson(input: string) {
     try {
@@ -31,6 +32,13 @@
     border = false,
     animate = false
   }: Props = $props();
+
+  let showCloseText = $state(false);
+
+  const closeButtonAtt: Attachment = (element) => {
+    (element as HTMLButtonElement).focus();
+    return () => {};
+  };
 </script>
 
 <div class="fixed inset-0 z-2147483647 bg-white/20 backdrop-blur-lg">
@@ -62,9 +70,26 @@
   >
     <div class="fixed top-5 right-6 text-neutral-300">
       <button
+        data-oval-close
+        {@attach closeButtonAtt}
         onclick={() => onClickClose?.()}
-        class="cursor-pointer rounded-full p-2 hover:bg-neutral-400 active:scale-95 active:bg-neutral-500"
-        ><XIcon size={18} />
+        onmouseenter={() => (showCloseText = true)}
+        onmouseleave={() => (showCloseText = false)}
+        onfocus={() => (showCloseText = true)}
+        onblur={() => (showCloseText = false)}
+        class="group inline-flex h-9 cursor-pointer items-center justify-center gap-1 rounded-full px-2 hover:bg-neutral-400 hover:text-neutral-900 active:scale-95 active:bg-neutral-300"
+      >
+        {#if showCloseText}
+          <span class="text-sm leading-none text-muted-foreground group-hover:text-neutral-900"
+            >close</span
+          >
+        {:else}
+          <span
+            class="inline-flex h-5.5 items-center rounded-full border px-2 text-sm text-muted-foreground group-hover:text-neutral-900"
+            >esc</span
+          >
+        {/if}
+        <XIcon size={18} />
       </button>
     </div>
 
