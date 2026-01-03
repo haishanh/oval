@@ -23,14 +23,12 @@
     onChange = () => {},
     options = [
       { value: 'foo', label: 'Foo' },
-      { value: 'bar', label: 'Bar' }
+      { value: 'bar', label: 'Bar' },
     ],
-    placeholder = 'Select one'
+    placeholder = 'Select one',
   }: SelectProps = $props();
 
-  const selectedLabel = $derived(
-    value ? options.find((o) => o.value === value)?.label : placeholder
-  );
+  const selectedLabel = $derived(value ? options.find((o) => o.value === value)?.label : placeholder);
 </script>
 
 <Select.Root type="single" onValueChange={onChange} items={options} allowDeselect={true}>
@@ -38,7 +36,7 @@
     class={[
       'w-full min-w-0 rounded-md bg-input/20 dark:bg-input/30',
       'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
-      'inline-flex touch-none items-center border border-input py-1.5 pr-1 pl-3 outline-none select-none'
+      'inline-flex touch-none items-center border border-input py-1.5 pr-1 pl-3 outline-none select-none',
     ]}
     aria-label={placeholder}
     {id}

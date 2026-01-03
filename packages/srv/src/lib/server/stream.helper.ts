@@ -17,21 +17,16 @@ export function streamSSE(fn: (c: Ctx) => Promise<void>) {
             .join('\n');
 
           const sseData =
-            [
-              ev.event && `event: ${ev.event}`,
-              dataLines,
-              ev.id && `id: ${ev.id}`,
-              ev.retry && `retry: ${ev.retry}`
-            ]
+            [ev.event && `event: ${ev.event}`, dataLines, ev.id && `id: ${ev.id}`, ev.retry && `retry: ${ev.retry}`]
               .filter(Boolean)
               .join('\n') + '\n\n';
 
           controller.enqueue(encoder.encode(sseData));
-        }
+        },
       };
       const close = () => controller.close();
       fn(c).then(close, close);
-    }
+    },
   });
 
   return new Response(rs, {
@@ -40,7 +35,7 @@ export function streamSSE(fn: (c: Ctx) => Promise<void>) {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no'
-    }
+      'X-Accel-Buffering': 'no',
+    },
   });
 }

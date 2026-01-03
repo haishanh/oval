@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types';
 
 function makeGeminiSseData(input: string) {
   const data = {
-    candidates: [{ content: { parts: [{ text: input }], role: 'model' }, index: 0 }]
+    candidates: [{ content: { parts: [{ text: input }], role: 'model' }, index: 0 }],
   };
   return `data: ${JSON.stringify(data)}\r\n\r\n`;
 }
@@ -52,13 +52,13 @@ export const POST: RequestHandler = async ({ params }) => {
         await sleep(300);
       }
       controller.close();
-    }
+    },
   });
 
   return new Response(rs, {
     headers: {
       'content-type': 'text/event-stream',
-      'content-disposition': 'attachment'
-    }
+      'content-disposition': 'attachment',
+    },
   });
 };

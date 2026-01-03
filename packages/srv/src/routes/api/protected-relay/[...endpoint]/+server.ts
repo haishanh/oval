@@ -1,6 +1,6 @@
-import { error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
 import { registry } from '$lib/server/registry';
+import type { RequestHandler } from './$types';
+import { error } from '@sveltejs/kit';
 
 // gemini-flash-latest
 // gemini-2.5-flash-lite

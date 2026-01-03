@@ -1,6 +1,6 @@
+import { createAsyncIterableFromSSEResponse } from './sse.util';
 import type { KyInstance } from 'ky';
 import ky from 'ky';
-import { createAsyncIterableFromSSEResponse } from './sse.util';
 
 const DEFAULT_BASE_URL = 'https://oval-worker.hs.workers.dev';
 const DEFAULT_TIMEOUT = 70_000;

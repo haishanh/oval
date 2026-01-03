@@ -1,5 +1,5 @@
-import { json } from '@sveltejs/kit';
 import { ApiError } from './api.error';
+import { json } from '@sveltejs/kit';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function wrap(fn: () => any) {

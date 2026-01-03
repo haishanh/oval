@@ -6,10 +6,16 @@ import { log } from '@/utils/logger';
 import { generate } from '$lib/shared/mock.util';
 import { sleep } from '$lib/shared/common.util';
 import { OvalExtOptionsSchema, TProviderOptions } from '$lib/components/options/schema';
-import { PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK } from '$lib/components/options/constant';
+import {
+  PROVIDER_DEFAULTS,
+  PROVIDER_GOOGLE_GEMINI,
+  PROVIDER_XAI_GROK,
+  PROVIDER_XIAOMI_MIMO,
+} from '$lib/components/options/constant';
 import { STORAGE_KEY } from '@/utils/constant';
 import { GrokService } from '$lib/shared/grok.service';
 import { HTTPError } from 'ky';
+import { MimoService } from '$lib/shared/mimo.service';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
 
@@ -46,22 +52,27 @@ function generateMockSummary() {
 
 async function getLlmSvc(parsed: TProviderOptions | undefined) {
   if (!parsed) return;
+
   if (typeof parsed.activeKey !== 'string' || parsed.activeKey === '') return;
 
-  for (const provider of parsed.providers) {
-    if (provider.key === parsed.activeKey) {
-      if (provider.provider === PROVIDER_GOOGLE_GEMINI) {
-        return new GeminiService({
-          apiKey: provider.apiKey,
-          baseUrl: provider.apiBaseUrl,
-          model: provider.model,
-        });
-      } else if (provider.provider === PROVIDER_XAI_GROK) {
-        return new GrokService({
-          apiKey: provider.apiKey,
-          baseUrl: provider.apiBaseUrl,
-          model: provider.model,
-        });
+  for (const p of parsed.providers) {
+    const { key, apiKey, provider } = p;
+    if (key === parsed.activeKey) {
+      if (provider === PROVIDER_GOOGLE_GEMINI) {
+        const d = PROVIDER_DEFAULTS[PROVIDER_GOOGLE_GEMINI];
+        const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
+        const model = p.model || d.model;
+        return new GeminiService({ apiKey, baseUrl, model });
+      } else if (provider === PROVIDER_XAI_GROK) {
+        const d = PROVIDER_DEFAULTS[PROVIDER_XAI_GROK];
+        const baseUrl = p.apiBaseUrl || d.apiBaseUrl
+        const model = p.model || d.model;
+        return new GrokService({ apiKey, baseUrl, model });
+      } else if (provider === PROVIDER_XIAOMI_MIMO) {
+        const d = PROVIDER_DEFAULTS[PROVIDER_XIAOMI_MIMO];
+        const baseUrl = p.apiBaseUrl || d.apiBaseUrl
+        const model = p.model || d.model;
+        return new MimoService({ apiKey, baseUrl, model });
       }
     }
   }

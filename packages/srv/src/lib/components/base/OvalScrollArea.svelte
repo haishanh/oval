@@ -6,13 +6,7 @@
     viewportClasses?: string;
   };
 
-  let {
-    ref = $bindable(null),
-    orientation = 'vertical',
-    viewportClasses,
-    children,
-    ...restProps
-  }: Props = $props();
+  let { ref = $bindable(null), orientation = 'vertical', viewportClasses, children, ...restProps }: Props = $props();
 </script>
 
 {#snippet Scrollbar({ orientation }: { orientation: 'vertical' | 'horizontal' })}

@@ -1,5 +1,5 @@
-import assert from 'node:assert';
 import { GrokService } from './grok.service';
+import assert from 'node:assert';
 
 (async () => {
   console.log(process.env.XAI_API_KEY);
@@ -9,8 +9,8 @@ import { GrokService } from './grok.service';
   const res = await grok.complete([
     {
       role: 'user',
-      content: 'Who are the founders of Tesla, the EV company?'
-    }
+      content: 'Who are the founders of Tesla, the EV company?',
+    },
   ]);
   const ai = GrokService.createAsyncIterableTextStreamFromResponse(res);
   let t = '';

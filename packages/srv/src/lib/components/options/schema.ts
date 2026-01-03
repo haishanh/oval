@@ -1,12 +1,12 @@
+import { PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK, PROVIDER_XIAOMI_MIMO } from './constant';
 import * as z from 'zod';
-import { PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK } from './constant';
 
 export const ProviderSchema = z.object({
   key: z.string(),
   apiKey: z.string(),
   model: z.string().optional(),
   apiBaseUrl: z.string().optional(),
-  provider: z.enum([PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK]),
+  provider: z.enum([PROVIDER_GOOGLE_GEMINI, PROVIDER_XAI_GROK, PROVIDER_XIAOMI_MIMO]),
   createdAt: z.number(),
 });
 

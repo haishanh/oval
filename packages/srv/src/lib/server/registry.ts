@@ -2,7 +2,7 @@ import { GeminiService } from '$lib/shared/gemini.service';
 import { GEMINI_API_KEY } from './env';
 
 export const registry = {
-  getGeminiService: newGeminiService()
+  getGeminiService: newGeminiService(),
 };
 
 export type Registry = typeof registry;

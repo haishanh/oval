@@ -1,6 +1,7 @@
 <script lang="ts">
   import BadLucidIcon from './BadLucidIcon.svelte';
   import Markdown from 'svelte-exmarkdown';
+
   type Props = {
     summary: {
       details?: {
@@ -18,9 +19,7 @@
     <div class="my-4"><Markdown md={detail.info} /></div>
   {:else}
     <div class="grid grid-cols-[32px_minmax(0,1fr)] items-center gap-3 py-3">
-      <span
-        class="inline-flex size-9 items-center justify-center place-self-center rounded-full bg-arc-blue"
-      >
+      <span class="inline-flex size-9 items-center justify-center place-self-center rounded-full bg-arc-blue">
         {#if detail.icon}
           <BadLucidIcon name={detail.icon} size={20} />
         {/if}

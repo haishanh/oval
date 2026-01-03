@@ -4,11 +4,11 @@
   import Field from './Field.svelte';
   import FieldSelect from './FieldSelect.svelte';
   import {
-    DEFAULT_MODEL_GEMINI,
-    DEFAULT_MODEL_GROK,
+    PROVIDER_DEFAULTS,
     PROVIDER_GOOGLE_GEMINI,
     PROVIDER_OPTIONS,
     PROVIDER_XAI_GROK,
+    PROVIDER_XIAOMI_MIMO,
   } from './constant';
   import { ProviderSchema, type TProvider } from './schema';
   import type { TOptionsHandlers } from './type';
@@ -19,6 +19,8 @@
     current?: TProvider;
   };
   let { onAddProvider, onEditProvider, current }: Props = $props();
+
+  const defaults = PROVIDER_DEFAULTS;
 
   const form = createForm(() => ({
     defaultValues: current || {
@@ -40,7 +42,7 @@
       } catch (e) {
         if (e instanceof z.ZodError) {
           const msg = e.issues.map((i) => i.message).join(', ');
-          // TODO this is bad user is not get to see this message
+          // TODO this is bad - user is not get to see this message
           // better add a form level error message display
           console.error(msg);
         } else {
@@ -92,7 +94,10 @@
                 href="https://aistudio.google.com/">Google AI Studio</ExternalLink
               >{:else if provider.current === PROVIDER_XAI_GROK}You can get API key from <ExternalLink
                 href="https://console.x.ai/home">xAI Cloud Console</ExternalLink
-              >{/if}
+              >{:else if provider.current === PROVIDER_XIAOMI_MIMO}You can get API key from <ExternalLink
+                href="https://platform.xiaomimimo.com/#/console/api-keys">Xiaomi MiMo Open Platform</ExternalLink
+              >
+            {/if}
           {/snippet}
         </Field>
       {/snippet}
@@ -101,11 +106,7 @@
       {#snippet children(field)}
         <Field
           label="Model (Optional)"
-          placeholder={provider.current === PROVIDER_GOOGLE_GEMINI
-            ? DEFAULT_MODEL_GEMINI
-            : provider.current === PROVIDER_XAI_GROK
-              ? DEFAULT_MODEL_GROK
-              : ''}
+          placeholder={defaults[provider.current as TProvider['provider']]?.model || ''}
           value={field.state.value}
           onblur={field.handleBlur}
           oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
@@ -116,11 +117,7 @@
       {#snippet children(field)}
         <Field
           label="API Base URL (Optional)"
-          placeholder={provider.current === PROVIDER_GOOGLE_GEMINI
-            ? 'https://generativelanguage.googleapis.com'
-            : provider.current === PROVIDER_XAI_GROK
-              ? 'https://api.x.ai'
-              : ''}
+          placeholder={defaults[provider.current as TProvider['provider']]?.apiBaseUrl || ''}
           value={field.state.value}
           onblur={field.handleBlur}
           oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}

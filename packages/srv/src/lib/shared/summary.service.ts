@@ -1,8 +1,10 @@
 import { GrokService } from './grok.service';
 import { GeminiService } from './index.service';
+import { MimoService } from './mimo.service';
+import { OpenaiBaseService } from './openai.base.service';
 
 export class SummaryService {
-  constructor(private readonly llm: GeminiService | GrokService) {}
+  constructor(private readonly llm: GeminiService | GrokService | MimoService) {}
 
   summarize(
     input: { content: string; title: string },
@@ -54,13 +56,13 @@ export class SummaryService {
           for await (const text of aig) {
             yield text;
           }
-        } else if (llm instanceof GrokService) {
+        } else if (llm instanceof OpenaiBaseService) {
           const messages = [
             { role: 'system', content: instruction },
             { role: 'user', content: user },
           ];
           const res = await llm.complete(messages);
-          const aig = GrokService.createAsyncIterableTextStreamFromResponse(res);
+          const aig = OpenaiBaseService.createAsyncIterableTextStreamFromResponse(res);
           for await (const text of aig) {
             yield text;
           }

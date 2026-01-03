@@ -4,7 +4,7 @@
   const items = [
     { Icon0: Settings2Icon, text: 'General' },
     { Icon0: KeyRoundIcon, text: 'Provider' },
-    { Icon0: InfoIcon, text: 'About' }
+    { Icon0: InfoIcon, text: 'About' },
   ];
 
   type Props = {
@@ -23,8 +23,8 @@
         class={[
           'flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1.5',
           {
-            'bg-oval-green/30 text-oval-green': active === text
-          }
+            'bg-oval-green/30 text-oval-green': active === text,
+          },
         ]}><Icon0 size={16} /><span>{text}</span></button
       >
     </li>

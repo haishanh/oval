@@ -3,11 +3,11 @@
 declare global {
   namespace App {
     interface Platform {
-      env: Env
-      cf: CfProperties
-      ctx: ExecutionContext
+      env: Env;
+      cf: CfProperties;
+      ctx: ExecutionContext;
     }
   }
 }
 
-export { };
+export {};

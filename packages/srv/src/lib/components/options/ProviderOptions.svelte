@@ -2,7 +2,7 @@
   import Button from '../base/Button.svelte';
   import Modal from './Modal.svelte';
   import ProviderConfigForm from './ProviderConfigForm.svelte';
-  import { DEFAULT_MODEL_GEMINI, DEFAULT_MODEL_GROK } from './constant';
+  import { PROVIDER_DEFAULTS } from './constant';
   import type { TProvider, TProviderOptions } from './schema';
   import type { TOptionsHandlers } from './type';
   import { CircleCheckBigIcon, CircleIcon, PencilIcon, TrashIcon } from '@lucide/svelte';
@@ -18,13 +18,13 @@
   let currentEditingProvider = $state<TProvider | undefined>(undefined);
 </script>
 
-<p class="mb-1">Oval currently supports Google Gemini and xAI Grok.</p>
+<p class="mb-1">Oval currently supports Google Gemini, xAI Grok and Xiaomi MiMo.</p>
 
 {#if value.providers.length > 0}
   <RadioGroup.Root class="pt-4" value={value.activeKey} onValueChange={onSelectActiveProvider}>
     <div class="group flex flex-col items-center gap-2 text-foreground transition-all select-none">
       {#each value.providers as item (item.key)}
-        {@const model = item.model || (item.provider === 'Google Gemini' ? DEFAULT_MODEL_GEMINI : DEFAULT_MODEL_GROK)}
+        {@const model = item.model || PROVIDER_DEFAULTS[item.provider as TProvider['provider']]?.model}
         <div class="flex w-full items-center gap-2">
           <RadioGroup.Item
             value={item.key}

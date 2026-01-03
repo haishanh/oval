@@ -27,7 +27,7 @@
         'outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
         'disabled:cursor-not-allowed disabled:opacity-50',
         'py-1.5 pl-3',
-        kind === 'hidden' ? 'pr-8' : 'pr-3'
+        kind === 'hidden' ? 'pr-8' : 'pr-3',
       ]}
       {id}
       {...rest}

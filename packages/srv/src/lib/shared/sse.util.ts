@@ -1,7 +1,7 @@
 export function createAsyncIterableFromSSEResponse<Chunk>(
   res: Response,
   sep = '\n\n',
-  parseDataLine: (line: string) => Chunk | undefined
+  parseDataLine: (line: string) => Chunk | undefined,
 ) {
   const reader = res.body?.getReader();
   if (!reader) throw new Error('res.body is not readable');
@@ -42,7 +42,7 @@ export function createAsyncIterableFromSSEResponse<Chunk>(
         const text = parseDataLine(left);
         if (text) yield text;
       }
-    }
+    },
   };
   return ai;
 }

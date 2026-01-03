@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { createForm } from '@tanstack/svelte-form';
   import FieldSelect from './FieldSelect.svelte';
   import { langOptions } from './langOptions';
+  import { createForm } from '@tanstack/svelte-form';
 
   type Props = {
     isUsingBuiltInProvider?: boolean;
@@ -12,21 +12,21 @@
 
   const form = createForm(() => ({
     defaultValues: {
-      targetLanguage
-    }
+      targetLanguage,
+    },
   }));
 
   const options = [
     { label: 'Based on browser settings', value: '' },
-    ...langOptions.map((v) => ({ value: v, label: v }))
+    ...langOptions.map((v) => ({ value: v, label: v })),
   ];
 </script>
 
 <section class="space-y-2.5">
   {#if isUsingBuiltInProvider}
     <p>
-      You are currently using Oval's built-in LLM API keys. As Oval is a personal project, it's
-      recommended to Bring Your Own Keys. To do that, check out "Provider" in the left sidebar.
+      You are currently using Oval's built-in LLM API keys. As Oval is a personal project, it's recommended to Bring
+      Your Own Keys. To do that, check out "Provider" in the left sidebar.
     </p>
   {/if}
 

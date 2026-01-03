@@ -2,7 +2,7 @@ export class ApiError extends Error {
   constructor(
     public status: number,
     public code?: string,
-    message?: string
+    message?: string,
   ) {
     super(message);
     Error.captureStackTrace(this, this.constructor);
@@ -11,13 +11,13 @@ export class ApiError extends Error {
     const { code, message } = this;
     return {
       ...(code ? { code } : null),
-      ...(message ? { message } : null)
+      ...(message ? { message } : null),
     };
   }
 }
 
 export enum ApiErrorCode {
-  InvalidRequestBody = 'InvalidRequestBody'
+  InvalidRequestBody = 'InvalidRequestBody',
 }
 
 export enum HttpStatus {
@@ -63,7 +63,7 @@ export enum HttpStatus {
   // FAILED_DEPENDENCY = 424,
   // PRECONDITION_REQUIRED = 428,
   // TOO_MANY_REQUESTS = 429,
-  INTERNAL_SERVER_ERROR = 500
+  INTERNAL_SERVER_ERROR = 500,
   // NOT_IMPLEMENTED = 501,
   // BAD_GATEWAY = 502,
   // SERVICE_UNAVAILABLE = 503,

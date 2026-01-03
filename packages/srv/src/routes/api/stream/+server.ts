@@ -1,5 +1,5 @@
-import type { RequestHandler } from './$types';
 import { sleep } from '$lib/shared/common.util';
+import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async () => {
   const rs = new ReadableStream({
@@ -12,7 +12,7 @@ export const POST: RequestHandler = async () => {
         }
         controller.close();
       })();
-    }
+    },
   });
   return new Response(rs, {
     headers: {
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async () => {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
       Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no'
-    }
+      'X-Accel-Buffering': 'no',
+    },
   });
 };

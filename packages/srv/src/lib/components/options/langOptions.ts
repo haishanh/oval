@@ -19,5 +19,5 @@ export const langOptions = [
   'Russian',
   'Slovak',
   'Spanish',
-  'Turkish'
+  'Turkish',
 ];

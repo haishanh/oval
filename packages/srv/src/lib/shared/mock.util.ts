@@ -33,7 +33,7 @@ const sampleEnglish = [
   '  ]',
   '}',
 
-  CODE_FENCE
+  CODE_FENCE,
 ].join('\n');
 
 const sampleChinese = [
@@ -74,7 +74,7 @@ const sampleChinese = [
   '  ]',
   '}',
 
-  CODE_FENCE
+  CODE_FENCE,
 ].join('\n');
 
 // get random int in range [min, max)
@@ -95,6 +95,6 @@ export function generate(lang = 'English') {
         i = j;
         yield text;
       }
-    }
+    },
   };
 }

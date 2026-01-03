@@ -1,7 +1,7 @@
 <script lang="ts">
   import { makeId } from '$lib/shared/common.util';
-  import type { Snippet } from 'svelte';
   import Select, { type SelectProps } from './Select.svelte';
+  import type { Snippet } from 'svelte';
 
   let id = '' + makeId();
 

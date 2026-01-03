@@ -1,13 +1,19 @@
 {
   "name": "oval",
+  "scripts": {
+    "format": "bun run -F '*' format"
+  },
   "devDependencies": {
+    "@lucide/svelte": "0.562.0",
     "@sveltejs/kit": "2.49.2",
-    "@trivago/prettier-plugin-sort-imports": "6.0.0",
+    "@trivago/prettier-plugin-sort-imports": "6.0.1",
+    "bits-ui": "2.15.2",
     "ky": "1.14.2",
     "prettier": "3.7.4",
     "prettier-plugin-svelte": "3.4.1",
     "prettier-plugin-tailwindcss": "0.7.2",
-    "svelte": "5.46.1"
+    "svelte": "5.46.1",
+    "typescript-eslint": "8.51.0"
   },
   "private": true,
   "workspaces": [
