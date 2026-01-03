@@ -9,14 +9,14 @@ export class SummaryService {
     /**
      * can be 'English', 'Simplified Chinese', 'zh-CN', 'ja-JP'
      */
-    lang = 'English'
+    lang = 'English',
   ) {
     const { content, title } = input;
     const instruction = [
       'As a concise and helpful summarizer, create a one-page summary containing the most important information from the webpage info provided below.',
       'WEBPAGE INFO:',
       `<title>${title}</title>`,
-      `<<webpage>${content}</webpage>`
+      `<<webpage>${content}</webpage>`,
     ].join('\n');
     const user = [
       "The reader opened a webpage that's too long for them to read right now.",
@@ -42,14 +42,14 @@ export class SummaryService {
       '    info: string // A concise 1-2 sentence summary',
       '}',
       '```',
-      `Write the summary (but not JSON keys) in ${lang}.`
+      `Write the summary (but not JSON keys) in ${lang}.`,
     ].join('\n');
     const llm = this.llm;
     return {
       async *[Symbol.asyncIterator]() {
         if (llm instanceof GeminiService) {
           const reqBody = GeminiService.buildGenerateContentRequestBody(user, instruction);
-          const res = await llm.streamGenerateContent(reqBody, 'gemini-2.5-flash-preview-09-2025');
+          const res = await llm.streamGenerateContent(reqBody);
           const aig = GeminiService.createAsyncIterableTextStreamFromResponse(res);
           for await (const text of aig) {
             yield text;
@@ -57,15 +57,15 @@ export class SummaryService {
         } else if (llm instanceof GrokService) {
           const messages = [
             { role: 'system', content: instruction },
-            { role: 'user', content: user }
+            { role: 'user', content: user },
           ];
-          const res = await llm.complete(messages, 'grok-4-1-fast-non-reasoning');
+          const res = await llm.complete(messages);
           const aig = GrokService.createAsyncIterableTextStreamFromResponse(res);
           for await (const text of aig) {
             yield text;
           }
         }
-      }
+      },
     };
   }
 }

@@ -1,6 +1,6 @@
+import { createAsyncIterableFromSSEResponse } from './sse.util';
 import type { KyInstance } from 'ky';
 import ky from 'ky';
-import { createAsyncIterableFromSSEResponse } from './sse.util';
 
 type GrokChoice = {
   index: number;
@@ -29,19 +29,29 @@ const DEFAULT_BASE_URL = 'https://api.x.ai';
 
 export class GrokService {
   private ky: KyInstance;
+  private model: string;
 
-  constructor(opts: {
-    /** API Key */
-    apiKey: string;
-    /** Base URL */
-    baseUrl?: string;
-  }) {
+  constructor(
+    readonly opts: {
+      /** API Key */
+      apiKey: string;
+      /** Base URL */
+      baseUrl?: string;
+      timeout?: number;
+      /** default model */
+      model?: string;
+    },
+  ) {
     const prefixUrl = opts.baseUrl || DEFAULT_BASE_URL;
+    const timeout = opts.timeout || 70000;
+
+    this.model = opts.model || 'grok-4-1-fast-non-reasoning';
+
     const headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${opts.apiKey}`
+      Authorization: `Bearer ${opts.apiKey}`,
     };
-    this.ky = ky.create({ prefixUrl, headers });
+    this.ky = ky.create({ prefixUrl, headers, timeout });
   }
 
   async complete(
@@ -49,10 +59,11 @@ export class GrokService {
       content: string;
       role: string;
     }[],
-    model = 'grok-4-1-fast-non-reasoning'
+    providedModel?: string,
   ) {
+    const model = providedModel || this.model;
     const json = { messages, model, stream: true, temperature: 0.4 };
-    return await this.ky.post('v1/chat/completions', { json, timeout: 70000 });
+    return await this.ky.post('v1/chat/completions', { json });
   }
 
   static createAsyncIterableTextStreamFromResponse(res: Response): AsyncIterable<string> {
@@ -67,7 +78,7 @@ export class GrokService {
             console.log('Unexpected finish_reason:', fr);
           }
         }
-      }
+      },
     };
   }
 

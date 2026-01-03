@@ -54,11 +54,13 @@ async function getLlmSvc(parsed: TProviderOptions | undefined) {
         return new GeminiService({
           apiKey: provider.apiKey,
           baseUrl: provider.apiBaseUrl,
+          model: provider.model,
         });
       } else if (provider.provider === PROVIDER_XAI_GROK) {
         return new GrokService({
           apiKey: provider.apiKey,
           baseUrl: provider.apiBaseUrl,
+          model: provider.model,
         });
       }
     }
@@ -96,18 +98,14 @@ async function handleArticleMessage(
     }
   }
 
-  if (!ai) {
-    // fallback to our own
-    const ovalSvc = new OvalService({ apiKey: ovalApiKey });
-    const res = await ovalSvc.generate({
-      content: article.content,
-      title: article.title,
-      lang,
-    });
-    ai = OvalService.createAsyncIterableTextStreamFromResponse(res);
-  }
-
   try {
+    if (!ai) {
+      // fallback to our own
+      const ovalSvc = new OvalService({ apiKey: ovalApiKey });
+      const res = await ovalSvc.generate({ content: article.content, title: article.title, lang });
+      ai = OvalService.createAsyncIterableTextStreamFromResponse(res);
+    }
+
     for await (const text of ai) {
       port.postMessage({
         type: MessageType.TextChunk,
