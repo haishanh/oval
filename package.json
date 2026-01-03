@@ -1,6 +1,7 @@
 {
   "name": "oval",
   "devDependencies": {
+    "@sveltejs/kit": "2.49.2",
     "@trivago/prettier-plugin-sort-imports": "6.0.0",
     "ky": "1.14.2",
     "prettier": "3.7.4",

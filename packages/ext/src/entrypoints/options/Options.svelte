@@ -15,7 +15,6 @@
         try {
           const parsed = OvalExtOptionsSchema.parse(result);
           if (parsed.llmProvider) {
-            // const parsed = ProviderOptionsSchema.parse(result.llmProvider);
             llmProvider.providers = parsed.llmProvider.providers;
             llmProvider.activeKey = parsed.llmProvider.activeKey;
           }
@@ -41,6 +40,12 @@
   {optionsLoaded}
   onAddProvider={(provider) => {
     llmProvider.providers.push(provider);
+  }}
+  onEditProvider={(provider) => {
+    const index = llmProvider.providers.findIndex((p) => p.key === provider.key);
+    if (index !== -1) {
+      llmProvider.providers[index] = provider;
+    }
   }}
   onDeleteProvider={(key) => {
     llmProvider.providers = llmProvider.providers.filter((provider) => provider.key !== key);

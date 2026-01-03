@@ -1,36 +1,42 @@
 <script lang="ts">
-  import { createForm, revalidateLogic } from '@tanstack/svelte-form';
+  import Button from '../base/Button.svelte';
+  import ExternalLink from '../base/ExternalLink.svelte';
   import Field from './Field.svelte';
   import FieldSelect from './FieldSelect.svelte';
-  import Button from '../base/Button.svelte';
   import {
     DEFAULT_MODEL_GEMINI,
     DEFAULT_MODEL_GROK,
     PROVIDER_GOOGLE_GEMINI,
     PROVIDER_OPTIONS,
-    PROVIDER_XAI_GROK
+    PROVIDER_XAI_GROK,
   } from './constant';
-  import { ProviderSchema } from './schema';
-  import * as z from 'zod';
+  import { ProviderSchema, type TProvider } from './schema';
   import type { TOptionsHandlers } from './type';
-  import ExternalLink from '../base/ExternalLink.svelte';
+  import { createForm, revalidateLogic } from '@tanstack/svelte-form';
+  import * as z from 'zod';
 
-  type Props = Pick<TOptionsHandlers, 'onAddProvider'>;
-  let { onAddProvider }: Props = $props();
+  type Props = Pick<TOptionsHandlers, 'onAddProvider' | 'onEditProvider'> & {
+    current?: TProvider;
+  };
+  let { onAddProvider, onEditProvider, current }: Props = $props();
 
   const form = createForm(() => ({
-    defaultValues: {
+    defaultValues: current || {
       provider: PROVIDER_GOOGLE_GEMINI,
       apiKey: '',
       model: '',
       apiBaseUrl: '',
       createdAt: Date.now(),
-      key: crypto.randomUUID()
+      key: crypto.randomUUID(),
     },
     onSubmit: async ({ value }) => {
       try {
         const v = ProviderSchema.parse(value);
-        onAddProvider(v);
+        if (current) {
+          onEditProvider(v);
+        } else {
+          onAddProvider(v);
+        }
       } catch (e) {
         if (e instanceof z.ZodError) {
           const msg = e.issues.map((i) => i.message).join(', ');
@@ -42,7 +48,7 @@
         }
       }
     },
-    validationLogic: revalidateLogic()
+    validationLogic: revalidateLogic(),
   }));
   const provider = form.useStore((state) => state.values.provider);
 </script>
@@ -69,7 +75,7 @@
     <form.Field
       name="apiKey"
       validators={{
-        onDynamic: ({ value }) => (value && value.length > 0 ? undefined : 'API Key is required')
+        onDynamic: ({ value }) => (value && value.length > 0 ? undefined : 'API Key is required'),
       }}
     >
       {#snippet children(field)}
@@ -126,7 +132,7 @@
     <form.Subscribe
       selector={(state) => ({
         canSubmit: state.canSubmit,
-        isSubmitting: state.isSubmitting
+        isSubmitting: state.isSubmitting,
       })}
     >
       {#snippet children(state)}

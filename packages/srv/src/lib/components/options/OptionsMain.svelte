@@ -1,9 +1,9 @@
 <script lang="ts">
+  import ExternalLink from '$lib/components/base/ExternalLink.svelte';
+  import Oval from '$lib/components/base/Oval.svelte';
   import GeneralOptions from '$lib/components/options/GeneralOptions.svelte';
   import ProviderOptions from '$lib/components/options/ProviderOptions.svelte';
   import Sidebar from '$lib/components/options/Sidebar.svelte';
-  import ExternalLink from '$lib/components/base/ExternalLink.svelte';
-  import Oval from '$lib/components/base/Oval.svelte';
   import type { TOvalExtOptions } from './schema';
   import type { TOptionsHandlers } from './type';
 
@@ -16,7 +16,7 @@
     optionsLoaded: boolean;
   } & Pick<
     TOptionsHandlers,
-    'onDeleteProvider' | 'onAddProvider' | 'onSelectActiveProvider' | 'onKvChange'
+    'onDeleteProvider' | 'onAddProvider' | 'onEditProvider' | 'onSelectActiveProvider' | 'onKvChange'
   >;
 
   let {
@@ -24,8 +24,9 @@
     optionsLoaded,
     onDeleteProvider,
     onAddProvider,
+    onEditProvider,
     onSelectActiveProvider,
-    onKvChange
+    onKvChange,
   }: Props = $props();
 </script>
 
@@ -46,6 +47,7 @@
             value={options.llmProvider}
             {onDeleteProvider}
             {onAddProvider}
+            {onEditProvider}
             {onSelectActiveProvider}
           />
         {:else if active === 'About'}

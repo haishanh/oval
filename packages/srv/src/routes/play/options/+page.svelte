@@ -1,8 +1,8 @@
 <script lang="ts">
   import OptionsMain from '$lib/components/options/OptionsMain.svelte';
-  import { onMount } from 'svelte';
   import { OvalExtOptionsSchema } from '$lib/components/options/schema';
   import { llmProvider, targetLanguage } from '$lib/components/options/state.svelte';
+  import { onMount } from 'svelte';
 
   const STORAGE_KEY = 'oval';
 
@@ -26,8 +26,8 @@
       STORAGE_KEY,
       JSON.stringify({
         llmProvider,
-        targetLanguage: targetLanguage.current
-      })
+        targetLanguage: targetLanguage.current,
+      }),
     );
   });
 </script>
@@ -37,6 +37,12 @@
   {optionsLoaded}
   onAddProvider={(provider) => {
     llmProvider.providers.push(provider);
+  }}
+  onEditProvider={(provider) => {
+    const index = llmProvider.providers.findIndex((p) => p.key === provider.key);
+    if (index !== -1) {
+      llmProvider.providers[index] = provider;
+    }
   }}
   onDeleteProvider={(key) => {
     llmProvider.providers = llmProvider.providers.filter((provider) => provider.key !== key);

@@ -1,19 +1,21 @@
 <script lang="ts">
-  import { CircleCheckBigIcon, CircleIcon, TrashIcon } from '@lucide/svelte';
+  import Button from '../base/Button.svelte';
   import Modal from './Modal.svelte';
   import ProviderConfigForm from './ProviderConfigForm.svelte';
-  import type { TOptionsHandlers } from './type';
-  import { RadioGroup } from 'bits-ui';
-  import Button from '../base/Button.svelte';
-  import type { TProviderOptions } from './schema';
   import { DEFAULT_MODEL_GEMINI, DEFAULT_MODEL_GROK } from './constant';
+  import type { TProvider, TProviderOptions } from './schema';
+  import type { TOptionsHandlers } from './type';
+  import { CircleCheckBigIcon, CircleIcon, PencilIcon, TrashIcon } from '@lucide/svelte';
+  import { RadioGroup } from 'bits-ui';
 
   type Props = {
     value: TProviderOptions;
-  } & Pick<TOptionsHandlers, 'onDeleteProvider' | 'onAddProvider' | 'onSelectActiveProvider'>;
+  } & Pick<TOptionsHandlers, 'onDeleteProvider' | 'onAddProvider' | 'onSelectActiveProvider' | 'onEditProvider'>;
 
-  let { value, onDeleteProvider, onAddProvider, onSelectActiveProvider }: Props = $props();
+  let { value, onDeleteProvider, onAddProvider, onEditProvider, onSelectActiveProvider }: Props = $props();
   let open = $state(false);
+
+  let currentEditingProvider = $state<TProvider | undefined>(undefined);
 </script>
 
 <p class="mb-1">Oval currently supports Google Gemini and xAI Grok.</p>
@@ -22,9 +24,7 @@
   <RadioGroup.Root class="pt-4" value={value.activeKey} onValueChange={onSelectActiveProvider}>
     <div class="group flex flex-col items-center gap-2 text-foreground transition-all select-none">
       {#each value.providers as item (item.key)}
-        {@const model =
-          item.model ||
-          (item.provider === 'Google Gemini' ? DEFAULT_MODEL_GEMINI : DEFAULT_MODEL_GROK)}
+        {@const model = item.model || (item.provider === 'Google Gemini' ? DEFAULT_MODEL_GEMINI : DEFAULT_MODEL_GROK)}
         <div class="flex w-full items-center gap-2">
           <RadioGroup.Item
             value={item.key}
@@ -43,12 +43,20 @@
               {#if item.apiBaseUrl}
                 <span class="text-sm text-muted-foreground">{item.apiBaseUrl}</span>
               {/if}
-              <span class="text-sm text-muted-foreground"
-                >{new Date(item.createdAt).toLocaleString()}</span
-              >
+              <span class="text-sm text-muted-foreground">{new Date(item.createdAt).toLocaleString()}</span>
             </div>
           </RadioGroup.Item>
           <div class="flex items-center gap-1">
+            <Button
+              iconOnly
+              onclick={() => {
+                open = true;
+                currentEditingProvider = item;
+              }}
+            >
+              <PencilIcon size={13} />
+              <span class="sr-only">Edit</span>
+            </Button>
             <Button iconOnly onclick={() => onDeleteProvider(item.key)}>
               <TrashIcon size={13} />
               <span class="sr-only">Delete</span>
@@ -63,6 +71,12 @@
 <div class="py-2 pt-4">
   <Modal bind:open>
     <ProviderConfigForm
+      current={currentEditingProvider}
+      onEditProvider={(v) => {
+        onEditProvider(v);
+        open = false;
+        currentEditingProvider = undefined;
+      }}
       onAddProvider={(v) => {
         onAddProvider(v);
         open = false;
