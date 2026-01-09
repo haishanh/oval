@@ -65,12 +65,12 @@ async function getLlmSvc(parsed: TProviderOptions | undefined) {
         return new GeminiService({ apiKey, baseUrl, model });
       } else if (provider === PROVIDER_XAI_GROK) {
         const d = PROVIDER_DEFAULTS[PROVIDER_XAI_GROK];
-        const baseUrl = p.apiBaseUrl || d.apiBaseUrl
+        const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
         const model = p.model || d.model;
         return new GrokService({ apiKey, baseUrl, model });
       } else if (provider === PROVIDER_XIAOMI_MIMO) {
         const d = PROVIDER_DEFAULTS[PROVIDER_XIAOMI_MIMO];
-        const baseUrl = p.apiBaseUrl || d.apiBaseUrl
+        const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
         const model = p.model || d.model;
         return new MimoService({ apiKey, baseUrl, model });
       }

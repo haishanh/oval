@@ -2,10 +2,8 @@ import { OpenaiBaseService } from './openai.base.service';
 
 export class GrokService extends OpenaiBaseService {
   constructor(opts: { apiKey: string; baseUrl?: string; timeout?: number; model?: string }) {
-    super({
-      ...opts,
-      baseUrl: 'https://api.x.ai',
-      model: 'grok-4-1-fast-non-reasoning',
-    });
+    const baseUrl = opts.baseUrl || 'https://api.x.ai';
+    const model = opts.model || 'grok-4-1-fast-non-reasoning';
+    super({ ...opts, baseUrl, model });
   }
 }
