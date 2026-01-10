@@ -18,7 +18,7 @@
   let currentEditingProvider = $state<TProvider | undefined>(undefined);
 </script>
 
-<p class="mb-1">Oval currently supports Google Gemini, xAI Grok and Xiaomi MiMo.</p>
+<p class="mb-1">Oval currently supports Google Gemini, xAI Grok, Xiaomi MiMo and Nvidia AI.</p>
 
 {#if value.providers.length > 0}
   <RadioGroup.Root class="pt-4" value={value.activeKey} onValueChange={onSelectActiveProvider}>

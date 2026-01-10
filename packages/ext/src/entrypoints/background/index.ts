@@ -11,11 +11,14 @@ import {
   PROVIDER_GOOGLE_GEMINI,
   PROVIDER_XAI_GROK,
   PROVIDER_XIAOMI_MIMO,
+  PROVIDER_NVIDIA_AI,
 } from '$lib/components/options/constant';
 import { STORAGE_KEY } from '@/utils/constant';
 import { GrokService } from '$lib/shared/grok.service';
 import { HTTPError } from 'ky';
 import { MimoService } from '$lib/shared/mimo.service';
+import { NvidiaAiService } from '$lib/shared/nvidia.service';
+import { OpenaiBaseService } from '$lib/shared/openai.base.service';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
 
@@ -63,16 +66,20 @@ async function getLlmSvc(parsed: TProviderOptions | undefined) {
         const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
         const model = p.model || d.model;
         return new GeminiService({ apiKey, baseUrl, model });
-      } else if (provider === PROVIDER_XAI_GROK) {
-        const d = PROVIDER_DEFAULTS[PROVIDER_XAI_GROK];
+      } else if (provider === PROVIDER_XAI_GROK || provider === PROVIDER_NVIDIA_AI) {
+        const d = PROVIDER_DEFAULTS[provider];
         const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
         const model = p.model || d.model;
-        return new GrokService({ apiKey, baseUrl, model });
+        return new OpenaiBaseService({ apiKey, baseUrl, model });
       } else if (provider === PROVIDER_XIAOMI_MIMO) {
-        const d = PROVIDER_DEFAULTS[PROVIDER_XIAOMI_MIMO];
+        const d = PROVIDER_DEFAULTS[provider];
         const baseUrl = p.apiBaseUrl || d.apiBaseUrl;
         const model = p.model || d.model;
         return new MimoService({ apiKey, baseUrl, model });
+      }
+
+      if (import.meta.env.DEV) {
+        log.error('provider config not handled', p);
       }
     }
   }
@@ -100,6 +107,7 @@ async function handleArticleMessage(
   const parsed = result.success ? result.data : undefined;
   const lang = await getTargetLanguage(parsed?.targetLanguage);
   let ai: AsyncIterable<string> | undefined;
+
   if (mock === '1') {
     ai = generateMockSummary();
   } else {
@@ -117,12 +125,15 @@ async function handleArticleMessage(
       ai = OvalService.createAsyncIterableTextStreamFromResponse(res);
     }
 
+    let t = '';
     for await (const text of ai) {
+      t += text;
       port.postMessage({
         type: MessageType.TextChunk,
         payload: { text },
       } satisfies z.infer<typeof Message>);
     }
+    log.info(t);
   } catch (e) {
     console.log(e);
 

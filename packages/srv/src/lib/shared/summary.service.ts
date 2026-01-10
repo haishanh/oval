@@ -3,10 +3,16 @@ import { GeminiService } from './index.service';
 import { MimoService } from './mimo.service';
 import { OpenaiBaseService } from './openai.base.service';
 
+type Nullable<T> = T | null;
+type Item = {
+  content: Nullable<string>;
+  reasoning_content: Nullable<string>;
+};
+
 export class SummaryService {
   constructor(private readonly llm: GeminiService | GrokService | MimoService) {}
 
-  summarize(
+  private gen(
     input: { content: string; title: string },
     /**
      * can be 'English', 'Simplified Chinese', 'zh-CN', 'ja-JP'
@@ -46,15 +52,27 @@ export class SummaryService {
       '```',
       `Write the summary (but not JSON keys) in ${lang}.`,
     ].join('\n');
+    return { instruction, user };
+  }
+
+  summarize(
+    input: { content: string; title: string },
+    /**
+     * can be 'English', 'Simplified Chinese', 'zh-CN', 'ja-JP'
+     */
+    lang = 'English',
+  ): AsyncIterable<string> {
+    const { user, instruction } = this.gen(input, lang);
     const llm = this.llm;
+
     return {
       async *[Symbol.asyncIterator]() {
         if (llm instanceof GeminiService) {
           const reqBody = GeminiService.buildGenerateContentRequestBody(user, instruction);
           const res = await llm.streamGenerateContent(reqBody);
           const aig = GeminiService.createAsyncIterableTextStreamFromResponse(res);
-          for await (const text of aig) {
-            yield text;
+          for await (const chunk of aig) {
+            yield chunk;
           }
         } else if (llm instanceof OpenaiBaseService) {
           const messages = [
@@ -63,8 +81,52 @@ export class SummaryService {
           ];
           const res = await llm.complete(messages);
           const aig = OpenaiBaseService.createAsyncIterableTextStreamFromResponse(res);
-          for await (const text of aig) {
-            yield text;
+          for await (const chunk of aig) {
+            yield chunk;
+          }
+        }
+      },
+    };
+  }
+
+  summarizeV2(
+    input: { content: string; title: string },
+    /**
+     * can be 'English', 'Simplified Chinese', 'zh-CN', 'ja-JP'
+     */
+    lang = 'English',
+  ): AsyncIterable<Item> {
+    const { user, instruction } = this.gen(input, lang);
+    const llm = this.llm;
+
+    return {
+      async *[Symbol.asyncIterator]() {
+        if (llm instanceof GeminiService) {
+          const reqBody = GeminiService.buildGenerateContentRequestBody(user, instruction);
+          const res = await llm.streamGenerateContent(reqBody);
+          const aig = GeminiService.createAsyncIterableStreamFromGeminiResponse(res);
+          for await (const chunk of aig) {
+            const part = chunk.candidates?.[0]?.content?.parts?.[0];
+            if (!part.text) continue;
+            if (part.thought) {
+              yield { reasoning_content: part.text, content: null };
+            } else {
+              yield { reasoning_content: null, content: part.text };
+            }
+          }
+        } else if (llm instanceof OpenaiBaseService) {
+          const messages = [
+            { role: 'system', content: instruction },
+            { role: 'user', content: user },
+          ];
+          const res = await llm.complete(messages);
+          const aig = OpenaiBaseService.createAsyncIterableStreamFromResponse(res);
+          for await (const chunk of aig) {
+            const fr = chunk?.choices?.[0]?.finish_reason;
+            if (!fr) {
+              const delta = chunk?.choices?.[0]?.delta;
+              if (delta) yield delta;
+            }
           }
         }
       },

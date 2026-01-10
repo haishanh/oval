@@ -5,6 +5,7 @@ type GeminiResponseCandidate = {
   content: {
     parts: {
       text: string;
+      thought?: boolean;
     }[];
   };
 };
@@ -68,7 +69,10 @@ export class GeminiService {
         : undefined),
       contents,
       generationConfig: {
-        thinkingConfig: { includeThoughts: false },
+        thinkingConfig: {
+          includeThoughts: false,
+          // thinkingLevel: 'low',
+        },
       },
     };
   }

@@ -90,14 +90,10 @@
           oninput={(e) => field.handleChange((e.target as HTMLInputElement).value)}
         >
           {#snippet info()}
-            {#if provider.current === PROVIDER_GOOGLE_GEMINI}You can get API key from <ExternalLink
-                href="https://aistudio.google.com/">Google AI Studio</ExternalLink
-              >{:else if provider.current === PROVIDER_XAI_GROK}You can get API key from <ExternalLink
-                href="https://console.x.ai/home">xAI Cloud Console</ExternalLink
-              >{:else if provider.current === PROVIDER_XIAOMI_MIMO}You can get API key from <ExternalLink
-                href="https://platform.xiaomimimo.com/#/console/api-keys">Xiaomi MiMo Open Platform</ExternalLink
-              >
-            {/if}
+            {@const fallback = defaults[provider.current as TProvider['provider']]?.apiKeyInfo}
+            {#if fallback.href}You can get API key from <ExternalLink href={fallback.href}
+                >{fallback.children}</ExternalLink
+              >{/if}
           {/snippet}
         </Field>
       {/snippet}

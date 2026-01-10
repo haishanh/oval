@@ -2,14 +2,20 @@ import { createAsyncIterableFromSSEResponse } from './sse.util';
 import type { KyInstance } from 'ky';
 import ky from 'ky';
 
-type GrokChoice = {
+type Nullable<T> = T | null;
+
+type CompletionChoice = {
   index: number;
-  delta: { content: string };
+  delta: {
+    role: Nullable<string>;
+    content: Nullable<string>;
+    reasoning_content: Nullable<string>;
+  };
   // "stop"
   finish_reason?: string;
 };
 
-type GrokChunk = {
+type CompletionChunk = {
   id: string;
   // "object":"chat.completion.chunk"
   object: string;
@@ -18,7 +24,7 @@ type GrokChunk = {
   created: number;
   // "model":"grok-4-1-fast-non-reasoning"
   model: string;
-  choices: GrokChoice[];
+  choices: CompletionChoice[];
   // "system_fingerprint":"fp_9d01d9ad3c"
   system_fingerprint: string;
 };
@@ -52,15 +58,25 @@ export class OpenaiBaseService {
     this.ky = ky.create({ prefixUrl, headers, timeout });
   }
 
+  transformInput(json: object) {
+    return json;
+  }
+
   async complete(
     messages: {
       content: string;
       role: string;
     }[],
-    providedModel?: string,
+    opts?: { model?: string } & unknown,
   ) {
-    const model = providedModel || this.model;
-    const json = { messages, model, stream: true, temperature: 0.4 };
+    const input = {
+      messages,
+      model: opts?.model || this.model,
+      stream: true,
+      temperature: 0.4,
+      ...opts,
+    };
+    const json = this.transformInput(input);
     return await this.ky.post('v1/chat/completions', { json });
   }
 
@@ -80,7 +96,7 @@ export class OpenaiBaseService {
     };
   }
 
-  static createAsyncIterableStreamFromResponse(res: Response): AsyncIterable<GrokChunk> {
+  static createAsyncIterableStreamFromResponse(res: Response): AsyncIterable<CompletionChunk> {
     const sep = '\n\n';
     return createAsyncIterableFromSSEResponse(res, sep, parseDataLine);
   }
@@ -91,7 +107,7 @@ function parseDataLine(ln: string) {
   // we dont are about end mark
   if (str === '[DONE]') return;
   try {
-    return JSON.parse(ln.substring(6)) as GrokChunk;
+    return JSON.parse(ln.substring(6)) as CompletionChunk;
   } catch (e) {
     console.error(e);
     console.log(`Unable to parse [${ln.substring(6)}] (content in []) as JSON`);
