@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from '../base/Button.svelte';
-  import Modal from './Modal.svelte';
   import ProviderConfigForm from './ProviderConfigForm.svelte';
+  import ProviderModal from './ProviderModal.svelte';
   import { PROVIDER_DEFAULTS } from './constant';
   import type { TProvider, TProviderOptions } from './schema';
   import type { TOptionsHandlers } from './type';
@@ -13,9 +13,9 @@
   } & Pick<TOptionsHandlers, 'onDeleteProvider' | 'onAddProvider' | 'onSelectActiveProvider' | 'onEditProvider'>;
 
   let { value, onDeleteProvider, onAddProvider, onEditProvider, onSelectActiveProvider }: Props = $props();
-  let open = $state(false);
 
-  let currentEditingProvider = $state<TProvider | undefined>(undefined);
+  let open = $state(false);
+  let currentEditingProvider = $state<TProvider | null>(null);
 </script>
 
 <p class="mb-1">Oval currently supports Google Gemini, xAI Grok, Xiaomi MiMo and Nvidia AI.</p>
@@ -69,18 +69,22 @@
 {/if}
 
 <div class="py-2 pt-4">
-  <Modal bind:open>
+  <ProviderModal
+    bind:open
+    onclicktrigger={() => {
+      currentEditingProvider = null;
+    }}
+  >
     <ProviderConfigForm
       current={currentEditingProvider}
       onEditProvider={(v) => {
         onEditProvider(v);
         open = false;
-        currentEditingProvider = undefined;
       }}
       onAddProvider={(v) => {
         onAddProvider(v);
         open = false;
       }}
     />
-  </Modal>
+  </ProviderModal>
 </div>

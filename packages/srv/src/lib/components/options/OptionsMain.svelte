@@ -30,7 +30,7 @@
   }: Props = $props();
 </script>
 
-<div class="mx-auto max-w-3xl space-y-2 p-4 text-foreground">
+<div class="mx-auto w-full max-w-3xl space-y-2 p-4 text-foreground">
   <div class="flex justify-end"><Oval /></div>
   <div class="ogrid">
     <Sidebar onclickitem={(key) => (active = key)} {active} />

@@ -3,20 +3,14 @@
   import ExternalLink from '../base/ExternalLink.svelte';
   import Field from './Field.svelte';
   import FieldSelect from './FieldSelect.svelte';
-  import {
-    PROVIDER_DEFAULTS,
-    PROVIDER_GOOGLE_GEMINI,
-    PROVIDER_OPTIONS,
-    PROVIDER_XAI_GROK,
-    PROVIDER_XIAOMI_MIMO,
-  } from './constant';
+  import { PROVIDER_DEFAULTS, PROVIDER_GOOGLE_GEMINI, PROVIDER_OPTIONS } from './constant';
   import { ProviderSchema, type TProvider } from './schema';
   import type { TOptionsHandlers } from './type';
   import { createForm, revalidateLogic } from '@tanstack/svelte-form';
   import * as z from 'zod';
 
   type Props = Pick<TOptionsHandlers, 'onAddProvider' | 'onEditProvider'> & {
-    current?: TProvider;
+    current?: TProvider | null;
   };
   let { onAddProvider, onEditProvider, current }: Props = $props();
 

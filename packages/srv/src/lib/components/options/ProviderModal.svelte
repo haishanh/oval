@@ -4,11 +4,19 @@
   import { Dialog } from 'bits-ui';
   import type { Snippet } from 'svelte';
 
-  let { children, open = $bindable() }: { children: Snippet; open: boolean } = $props();
+  let {
+    children,
+    open = $bindable(),
+    onclicktrigger,
+  }: {
+    children: Snippet;
+    open: boolean;
+    onclicktrigger?: () => void;
+  } = $props();
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Trigger>
+  <Dialog.Trigger onclick={onclicktrigger}>
     {#snippet child({ props })}
       <Button {...props}>Add provider configuration</Button>
     {/snippet}
