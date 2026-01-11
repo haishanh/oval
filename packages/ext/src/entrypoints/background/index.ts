@@ -133,7 +133,7 @@ async function handleArticleMessage(
         payload: { text },
       } satisfies z.infer<typeof Message>);
     }
-    log.info(t);
+    log.debug(t);
   } catch (e) {
     console.log(e);
 
