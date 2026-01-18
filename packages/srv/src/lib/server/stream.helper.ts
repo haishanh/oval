@@ -7,6 +7,8 @@ type Ctx = {
 export function streamSSE(fn: (c: Ctx) => Promise<void>) {
   const encoder = new TextEncoder();
 
+  let isClosed = false;
+
   const rs = new ReadableStream({
     start(controller) {
       const c = {
@@ -21,11 +23,19 @@ export function streamSSE(fn: (c: Ctx) => Promise<void>) {
               .filter(Boolean)
               .join('\n') + '\n\n';
 
+          if (isClosed) return;
           controller.enqueue(encoder.encode(sseData));
         },
       };
-      const close = () => controller.close();
+      const close = () => {
+        if (isClosed) return;
+        controller.close();
+      };
       fn(c).then(close, close);
+    },
+
+    cancel() {
+      isClosed = true;
     },
   });
 
