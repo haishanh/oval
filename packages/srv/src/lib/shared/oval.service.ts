@@ -15,12 +15,12 @@ export class OvalService {
     baseUrl?: string;
     timeout?: number;
   }) {
-    const prefixUrl = opts.baseUrl || DEFAULT_BASE_URL;
+    const prefix = opts.baseUrl || DEFAULT_BASE_URL;
     const headers = {
       'Content-Type': 'application/json',
       'x-api-key': opts.apiKey,
     };
-    this.ky = ky.create({ prefixUrl, headers, timeout: opts.timeout || DEFAULT_TIMEOUT });
+    this.ky = ky.create({ prefix, headers, timeout: opts.timeout || DEFAULT_TIMEOUT });
   }
 
   async generate(input: { content: string; title: string; lang: string }) {

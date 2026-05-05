@@ -46,7 +46,7 @@ export class OpenaiBaseService {
       model?: string;
     },
   ) {
-    const prefixUrl = opts.baseUrl;
+    const prefix = opts.baseUrl;
     const timeout = opts.timeout || 70000;
 
     this.model = opts.model;
@@ -55,7 +55,7 @@ export class OpenaiBaseService {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${opts.apiKey}`,
     };
-    this.ky = ky.create({ prefixUrl, headers, timeout });
+    this.ky = ky.create({ prefix, headers, timeout });
   }
 
   transformInput(json: object) {

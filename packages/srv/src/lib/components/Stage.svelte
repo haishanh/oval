@@ -51,30 +51,31 @@
     ]}
   ></div>
 
-  <OvalScrollArea orientation="vertical" type="scroll" class="absolute! inset-0" viewportClasses="h-full">
-    <div class="fixed top-5 right-6 text-neutral-300">
-      <button
-        data-oval-close
-        {@attach closeButtonAtt}
-        onclick={() => onClickClose?.()}
-        onmouseenter={() => (showCloseText = true)}
-        onmouseleave={() => (showCloseText = false)}
-        onfocus={() => (showCloseText = true)}
-        onblur={() => (showCloseText = false)}
-        class="group inline-flex h-9 cursor-pointer items-center justify-center gap-1 rounded-full px-2 hover:bg-neutral-400 hover:text-neutral-900 active:scale-95 active:bg-neutral-300"
-      >
-        {#if showCloseText}
-          <span class="text-sm leading-none text-muted-foreground group-hover:text-neutral-900">close</span>
-        {:else}
-          <span
-            class="inline-flex h-5.5 items-center rounded-full border px-2 text-sm text-muted-foreground group-hover:text-neutral-900"
-            >esc</span
-          >
-        {/if}
-        <XIcon size={18} />
-      </button>
-    </div>
+  <div class="fixed top-5 right-6 z-20 text-neutral-300">
+    <button
+      type="button"
+      data-oval-close
+      {@attach closeButtonAtt}
+      onclick={() => onClickClose?.()}
+      onmouseenter={() => (showCloseText = true)}
+      onmouseleave={() => (showCloseText = false)}
+      onfocus={() => (showCloseText = true)}
+      onblur={() => (showCloseText = false)}
+      class="group inline-flex h-9 cursor-pointer items-center justify-center gap-1 rounded-full px-2 hover:bg-neutral-400 hover:text-neutral-900 active:scale-95 active:bg-neutral-300"
+    >
+      {#if showCloseText}
+        <span class="text-sm leading-none text-muted-foreground group-hover:text-neutral-900">close</span>
+      {:else}
+        <span
+          class="inline-flex h-5.5 items-center rounded-full border px-2 text-sm text-muted-foreground group-hover:text-neutral-900"
+          >esc</span
+        >
+      {/if}
+      <XIcon size={18} />
+    </button>
+  </div>
 
+  <OvalScrollArea orientation="vertical" type="scroll" class="absolute! inset-0" viewportClasses="h-full">
     <div class="flex justify-center pt-14 pb-8">
       <div
         class={[

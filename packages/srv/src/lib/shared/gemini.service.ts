@@ -47,7 +47,7 @@ export class GeminiService {
       model?: string;
     },
   ) {
-    const prefixUrl = opts.baseUrl || DEFAULT_BASE_URL;
+    const prefix = opts.baseUrl || DEFAULT_BASE_URL;
     const timeout = opts.timeout || 70000;
 
     this.model = opts.model || 'gemini-2.5-flash-lite';
@@ -56,7 +56,7 @@ export class GeminiService {
       'Content-Type': 'application/json',
       'x-goog-api-key': opts.apiKey,
     };
-    this.ky = ky.create({ prefixUrl, headers, timeout });
+    this.ky = ky.create({ prefix, headers, timeout });
   }
 
   static buildGenerateContentRequestBody(text: string, instruction?: string) {
@@ -101,7 +101,9 @@ export class GeminiService {
     };
   }
 
-  static createAsyncIterableStreamFromGeminiResponse(res: Response): AsyncIterable<GeminiStreamData> {
+  static createAsyncIterableStreamFromGeminiResponse(
+    res: Response,
+  ): AsyncIterable<GeminiStreamData> {
     const sep = '\r\n\r\n';
     return createAsyncIterableFromSSEResponse(res, sep, parseDataLine);
   }

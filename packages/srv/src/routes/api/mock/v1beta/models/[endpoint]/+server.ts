@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ params }) => {
   console.log({ endpoint });
 
   // initial ttfb delay
-  await sleep(3000);
+  await sleep(1000);
 
   const encoder = new TextEncoder();
   const rs = new ReadableStream({
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ params }) => {
       for await (const text of ai) {
         const events = makeGeminiSseData(text);
         controller.enqueue(encoder.encode(events));
-        await sleep(300);
+        await sleep(30);
       }
       controller.close();
     },
