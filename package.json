@@ -4,16 +4,16 @@
     "format": "bun run -F '*' format"
   },
   "devDependencies": {
-    "@lucide/svelte": "0.562.0",
-    "@sveltejs/kit": "2.49.2",
-    "@trivago/prettier-plugin-sort-imports": "6.0.1",
-    "bits-ui": "2.15.2",
-    "ky": "1.14.2",
-    "prettier": "3.7.4",
-    "prettier-plugin-svelte": "3.4.1",
-    "prettier-plugin-tailwindcss": "0.7.2",
-    "svelte": "5.46.1",
-    "typescript-eslint": "8.51.0"
+    "@lucide/svelte": "1.14.0",
+    "@sveltejs/kit": "2.59.1",
+    "@trivago/prettier-plugin-sort-imports": "6.0.2",
+    "bits-ui": "2.18.1",
+    "ky": "2.0.2",
+    "prettier": "3.8.3",
+    "prettier-plugin-svelte": "3.5.1",
+    "prettier-plugin-tailwindcss": "0.8.0",
+    "svelte": "5.55.5",
+    "typescript-eslint": "8.59.2"
   },
   "private": true,
   "workspaces": [

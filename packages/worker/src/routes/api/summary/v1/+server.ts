@@ -1,3 +1,4 @@
+import { MIMO_API_KEY, GEMINI_API_KEY, OVAL_TOKEN_1 } from '$env/static/private';
 import { streamSSE } from '$lib/server/stream.helper';
 import { GeminiService } from '$lib/shared/gemini.service';
 import { MimoService } from '$lib/shared/mimo.service';
@@ -16,12 +17,13 @@ export const POST: RequestHandler = async ({
   // see https://svelte.dev/docs/kit/adapter-cloudflare#Runtime-APIs
   platform,
 }) => {
-  const geminiApiKey = platform?.env.GEMINI_API_KEY;
-  const mimoApiKey = platform?.env.MIMO_API_KEY;
-  if (!geminiApiKey || !mimoApiKey) return new Response('Server error', { status: 500 });
+  const geminiApiKey = GEMINI_API_KEY;
+  const mimoApiKey = MIMO_API_KEY;
+  if (!geminiApiKey || !mimoApiKey) return new Response('Server error 1', { status: 500 });
 
-  const ovalApiKey = platform?.env.OVAL_TOKEN_1;
-  if (!ovalApiKey) return new Response('Server error', { status: 500 });
+  // const ovalApiKey = platform?.env.OVAL_TOKEN_1;
+  const ovalApiKey = OVAL_TOKEN_1;
+  if (!ovalApiKey) return new Response('Server error 2', { status: 500 });
 
   const providedApiKey = request.headers.get('x-api-key');
   if (!providedApiKey || providedApiKey !== ovalApiKey) return new Response('Unauthorized', { status: 401 });
@@ -31,7 +33,7 @@ export const POST: RequestHandler = async ({
   if (!body.title) return new Response('Invalid input - missing title', { status: 400 });
 
   const ai = new SummaryService(
-    // new GeminiService({ apiKey: geminiApiKey })
+    // new GeminiService({ apiKey: geminiApiKey }),
     new MimoService({ apiKey: mimoApiKey }),
   ).summarize({ content: body.content, title: body.title }, body.lang);
 

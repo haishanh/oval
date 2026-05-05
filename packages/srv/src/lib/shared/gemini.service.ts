@@ -101,9 +101,7 @@ export class GeminiService {
     };
   }
 
-  static createAsyncIterableStreamFromGeminiResponse(
-    res: Response,
-  ): AsyncIterable<GeminiStreamData> {
+  static createAsyncIterableStreamFromGeminiResponse(res: Response): AsyncIterable<GeminiStreamData> {
     const sep = '\r\n\r\n';
     return createAsyncIterableFromSSEResponse(res, sep, parseDataLine);
   }

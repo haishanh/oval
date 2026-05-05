@@ -120,7 +120,11 @@ async function handleArticleMessage(
   try {
     if (!ai) {
       // fallback to our own
-      const ovalSvc = new OvalService({ apiKey: ovalApiKey });
+      const ovalSvc = new OvalService({
+        apiKey: ovalApiKey,
+        // When developing - use local Oval API
+        // baseUrl: 'http://localhost:8787',
+      });
       const res = await ovalSvc.generate({ content: article.content, title: article.title, lang });
       ai = OvalService.createAsyncIterableTextStreamFromResponse(res);
     }

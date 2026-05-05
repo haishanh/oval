@@ -16,7 +16,7 @@ export const PROVIDER_OPTIONS = [
 
 export const PROVIDER_DEFAULTS = {
   [PROVIDER_GOOGLE_GEMINI]: {
-    model: 'gemini-2.5-flash-preview-09-2025',
+    model: 'gemini-3-flash-preview',
     apiBaseUrl: 'https://generativelanguage.googleapis.com',
     apiKeyInfo: {
       href: 'https://aistudio.google.com/',
@@ -32,11 +32,11 @@ export const PROVIDER_DEFAULTS = {
     },
   },
   [PROVIDER_XIAOMI_MIMO]: {
-    model: 'mimo-v2-flash',
+    model: 'mimo-v2.5',
     apiBaseUrl: 'https://api.xiaomimimo.com',
     apiKeyInfo: {
-      href: 'https://console.x.ai/home',
-      children: 'xAI Cloud Console',
+      href: 'https://platform.xiaomimimo.com/docs/en-US/welcome',
+      children: 'Xiamo MIMO',
     },
   },
   [PROVIDER_NVIDIA_AI]: {
