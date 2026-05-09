@@ -1,4 +1,5 @@
-import { MIMO_API_KEY, GEMINI_API_KEY, OVAL_TOKEN_1 } from '$env/static/private';
+import { MIMO_API_KEY, GEMINI_API_KEY, OVAL_TOKEN_1, DEEPSEEK_API_KEY } from '$env/static/private';
+import { OpenaiBaseService } from '$lib';
 import { streamSSE } from '$lib/server/stream.helper';
 import { GeminiService } from '$lib/shared/gemini.service';
 import { MimoService } from '$lib/shared/mimo.service';
@@ -32,10 +33,15 @@ export const POST: RequestHandler = async ({
   if (!body.content) return new Response('Invalid input - missing content', { status: 400 });
   if (!body.title) return new Response('Invalid input - missing title', { status: 400 });
 
-  const ai = new SummaryService(
-    // new GeminiService({ apiKey: geminiApiKey }),
-    new MimoService({ apiKey: mimoApiKey }),
-  ).summarize({ content: body.content, title: body.title }, body.lang);
+  const llm = new OpenaiBaseService({
+    apiKey: DEEPSEEK_API_KEY,
+    baseUrl: 'https://api.deepseek.com',
+    model: 'deepseek-v4-flash',
+  });
+  // new GeminiService({ apiKey: geminiApiKey }),
+  // new MimoService({ apiKey: mimoApiKey }),
+
+  const ai = new SummaryService(llm).summarize({ content: body.content, title: body.title }, body.lang);
 
   return streamSSE(async (ctx) => {
     for await (const data of ai) {
