@@ -22,6 +22,7 @@
       "svelte": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./styles/tailwind": "./dist/style.css",
     "./components/summa.svelte": {
       "types": "./dist/components/summa.svelte.d.ts",
       "svelte": "./dist/components/summa.svelte.js"
@@ -29,6 +30,10 @@
     "./components/Stage.svelte": {
       "types": "./dist/components/Stage.svelte.d.ts",
       "svelte": "./dist/components/Stage.svelte"
+    },
+    "./components/options/schema": {
+      "types": "./dist/components/options/schema.d.ts",
+      "default": "./dist/components/options/schema.js"
     },
     "./components/options/OptionsMain.svelte": {
       "types": "./dist/components/options/OptionsMain.svelte.d.ts",
@@ -41,6 +46,14 @@
     "./components/popup/PopupMain.svelte": {
       "types": "./dist/components/popup/PopupMain.svelte.d.ts",
       "svelte": "./dist/components/popup/PopupMain.svelte"
+    },
+    "./server/stream.helper": {
+      "types": "./dist/server/stream.helper.d.ts",
+      "default": "./dist/server/stream.helper.js"
+    },
+    "./shared/common.util": {
+      "types": "./dist/share/common.util.d.ts",
+      "default": "./dist/shared/common.util.js"
     }
   },
   "files": [

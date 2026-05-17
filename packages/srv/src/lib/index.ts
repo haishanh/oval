@@ -11,6 +11,8 @@ export { GrokService } from '$lib/shared/grok.service';
 export { NvidiaAiService } from '$lib/shared/nvidia.service';
 export { OpenaiBaseService } from '$lib/shared/openai.base.service';
 
+export { streamSSE } from '$lib/server/stream.helper';
+
 export {
   PROVIDER_DEFAULTS,
   PROVIDER_GOOGLE_GEMINI,

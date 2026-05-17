@@ -1,6 +1,6 @@
 <script lang="ts">
   import { browser } from '#imports';
-  import PopupMain from '$lib/components/popup/PopupMain.svelte';
+  import PopupMain from 'srv/components/popup/PopupMain.svelte';
   import { MessageType } from '@/utils/message';
 </script>
 

@@ -8,13 +8,13 @@ import Defuddle from 'defuddle';
 import * as z from 'zod';
 import { Message, MessageType } from '@/utils/message';
 
-import '../../assets/tailwind.css';
+import './style.css';
 
 import App from './App.svelte';
 import { mount, unmount } from 'svelte';
 import { screenshot, title } from './state.svelte';
 import { log } from '@/utils/logger';
-import { summa, isLoading, summarizeError } from '$lib/components/summa.svelte';
+import { summa, isLoading, summarizeError } from 'srv/components/summa.svelte';
 
 const restore = createRestore();
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { screenshot, title } from './state.svelte';
-  import Stage from '$lib/components/Stage.svelte';
+  import Stage from 'srv/components/Stage.svelte';
 
   type Props = {
     handleClose?: () => void;

@@ -1,6 +1,6 @@
-import { streamSSE } from '$lib/server/stream.helper';
-import { sleep } from '$lib/shared/common.util';
 import type { RequestHandler } from './$types';
+import { sleep } from 'srv';
+import { streamSSE } from 'srv/server/stream.helper';
 
 export const GET: RequestHandler = async () => {
   return streamSSE(async (ctx) => {

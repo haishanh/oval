@@ -40,5 +40,8 @@
     "vitest": "^4.0.10",
     "vitest-browser-svelte": "^2.0.1",
     "wrangler": "^4.88.0"
+  },
+  "dependencies": {
+    "srv": "workspace:*"
   }
 }

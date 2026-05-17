@@ -1,24 +1,24 @@
 import { type Browser, browser, defineBackground } from '#imports';
 import { Message, MessageType } from '@/utils/message';
 import * as z from 'zod';
-import { GeminiService, SummaryService, OvalService } from '$lib/shared/index.service';
+import { GeminiService, SummaryService, OvalService } from 'srv';
 import { log } from '@/utils/logger';
-import { generate } from '$lib/shared/mock.util';
-import { sleep } from '$lib/shared/common.util';
-import { OvalExtOptionsSchema, TProviderOptions } from '$lib/components/options/schema';
+import { generate } from 'srv';
+import { sleep } from 'srv';
+import { OvalExtOptionsSchema, TProviderOptions } from 'srv';
 import {
   PROVIDER_DEFAULTS,
   PROVIDER_GOOGLE_GEMINI,
   PROVIDER_XAI_GROK,
   PROVIDER_XIAOMI_MIMO,
   PROVIDER_NVIDIA_AI,
-} from '$lib/components/options/constant';
+} from 'srv';
 import { STORAGE_KEY } from '@/utils/constant';
-import { GrokService } from '$lib/shared/grok.service';
+import { GrokService } from 'srv';
 import { HTTPError } from 'ky';
-import { MimoService } from '$lib/shared/mimo.service';
-import { NvidiaAiService } from '$lib/shared/nvidia.service';
-import { OpenaiBaseService } from '$lib/shared/openai.base.service';
+import { MimoService } from 'srv';
+import { NvidiaAiService } from 'srv';
+import { OpenaiBaseService } from 'srv';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
 

@@ -1,0 +1,2 @@
+@source '../../../node_modules/srv/dist/**/*.{js,svelte,ts,tsx}';
+@import 'srv/styles/tailwind';

@@ -1,10 +1,6 @@
 import { MIMO_API_KEY, GEMINI_API_KEY, OVAL_TOKEN_1, DEEPSEEK_API_KEY } from '$env/static/private';
-import { OpenaiBaseService } from '$lib';
-import { streamSSE } from '$lib/server/stream.helper';
-import { GeminiService } from '$lib/shared/gemini.service';
-import { MimoService } from '$lib/shared/mimo.service';
-import { SummaryService } from '$lib/shared/summary.service';
 import type { RequestHandler } from './$types';
+import { SummaryService, MimoService, GeminiService, streamSSE, OpenaiBaseService } from 'srv';
 
 type Body = {
   content: string;
