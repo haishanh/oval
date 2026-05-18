@@ -4,10 +4,10 @@
   import Field from './Field.svelte';
   import FieldSelect from './FieldSelect.svelte';
   import { PROVIDER_DEFAULTS, PROVIDER_GOOGLE_GEMINI, PROVIDER_OPTIONS } from './constant';
-  import { ProviderSchema, type TProvider } from './schema';
+  import { ProviderSchema, parseWith, type TProvider } from './schema';
   import type { TOptionsHandlers } from './type';
   import { createForm, revalidateLogic } from '@tanstack/svelte-form';
-  import * as z from 'zod';
+  import * as v from 'valibot';
 
   type Props = Pick<TOptionsHandlers, 'onAddProvider' | 'onEditProvider'> & {
     current?: TProvider | null;
@@ -27,14 +27,14 @@
     },
     onSubmit: async ({ value }) => {
       try {
-        const v = ProviderSchema.parse(value);
+        const parsed = parseWith(ProviderSchema, value);
         if (current) {
-          onEditProvider(v);
+          onEditProvider(parsed);
         } else {
-          onAddProvider(v);
+          onAddProvider(parsed);
         }
       } catch (e) {
-        if (e instanceof z.ZodError) {
+        if (v.isValiError(e)) {
           const msg = e.issues.map((i) => i.message).join(', ');
           // TODO this is bad - user is not get to see this message
           // better add a form level error message display

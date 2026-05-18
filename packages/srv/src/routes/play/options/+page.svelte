@@ -1,6 +1,6 @@
 <script lang="ts">
   import OptionsMain from '$lib/components/options/OptionsMain.svelte';
-  import { OvalExtOptionsSchema } from '$lib/components/options/schema';
+  import { OvalExtOptionsSchema, parseWith } from '$lib/components/options/schema';
   import { llmProvider, targetLanguage } from '$lib/components/options/state.svelte';
   import { onMount } from 'svelte';
 
@@ -12,7 +12,7 @@
     const v = localStorage.getItem(STORAGE_KEY);
 
     if (v) {
-      const parsed = OvalExtOptionsSchema.parse(JSON.parse(v));
+      const parsed = parseWith(OvalExtOptionsSchema, JSON.parse(v));
       llmProvider.providers = parsed.llmProvider.providers;
       llmProvider.activeKey = parsed.llmProvider.activeKey;
       targetLanguage.current = parsed.targetLanguage;

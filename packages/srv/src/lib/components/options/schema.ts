@@ -1,27 +1,39 @@
 import { PROVIDER_OPTIONS } from './constant';
-import * as z from 'zod';
+import * as v from 'valibot';
 
-export const ProviderSchema = z.object({
-  key: z.string(),
-  apiKey: z.string(),
-  model: z.string().optional(),
-  apiBaseUrl: z.string().optional(),
-  provider: z.enum(PROVIDER_OPTIONS),
-  createdAt: z.number(),
+export function parseWith<TSchema extends v.GenericSchema>(schema: TSchema, input: unknown) {
+  return v.parse(schema, input);
+}
+
+export function safeParseWith<TSchema extends v.GenericSchema>(schema: TSchema, input: unknown) {
+  const result = v.safeParse(schema, input);
+  if (result.success) {
+    return { success: true as const, data: result.output };
+  }
+  return { success: false as const, error: new v.ValiError(result.issues) };
+}
+
+export const ProviderSchema = v.object({
+  key: v.string(),
+  apiKey: v.string(),
+  model: v.optional(v.string()),
+  apiBaseUrl: v.optional(v.string()),
+  provider: v.picklist(PROVIDER_OPTIONS),
+  createdAt: v.number(),
 });
 
-export const ProviderOptionsSchema = z.object({
-  providers: z.array(ProviderSchema).default([]),
-  activeKey: z.string().default(''),
+export const ProviderOptionsSchema = v.object({
+  providers: v.optional(v.array(ProviderSchema), []),
+  activeKey: v.optional(v.string(), ''),
 });
 
-export const OvalExtOptionsSchema = z.object({
-  targetLanguage: z.string().default(''),
+export const OvalExtOptionsSchema = v.object({
+  targetLanguage: v.optional(v.string(), ''),
   llmProvider: ProviderOptionsSchema,
 });
 
-export type TOvalExtOptions = z.infer<typeof OvalExtOptionsSchema>;
+export type TOvalExtOptions = v.InferOutput<typeof OvalExtOptionsSchema>;
 
-export type TProvider = z.infer<typeof ProviderSchema>;
+export type TProvider = v.InferOutput<typeof ProviderSchema>;
 
-export type TProviderOptions = z.infer<typeof ProviderOptionsSchema>;
+export type TProviderOptions = v.InferOutput<typeof ProviderOptionsSchema>;

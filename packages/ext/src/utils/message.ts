@@ -1,4 +1,4 @@
-import * as z from 'zod';
+import * as v from 'valibot';
 
 export const MessageType = {
   Summarize: 'Summarize',
@@ -8,29 +8,31 @@ export const MessageType = {
   SummarizeError: 'SummarizeError',
 } as const;
 
-export const Message = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal(MessageType.Article),
-    payload: z.object({ content: z.string(), title: z.string() }),
+export const Message = v.variant('type', [
+  v.object({
+    type: v.literal(MessageType.Article),
+    payload: v.object({ content: v.string(), title: v.string() }),
   }),
-  z.object({
-    type: z.literal(MessageType.Screenshot),
-    payload: z.object({ b64ImgSrc: z.string() }),
+  v.object({
+    type: v.literal(MessageType.Screenshot),
+    payload: v.object({ b64ImgSrc: v.string() }),
   }),
-  z.object({
-    type: z.literal(MessageType.TextChunk),
-    payload: z.object({
-      text: z.string(),
-      isFirstChunk: z.boolean().optional(),
+  v.object({
+    type: v.literal(MessageType.TextChunk),
+    payload: v.object({
+      text: v.string(),
+      isFirstChunk: v.optional(v.boolean()),
     }),
   }),
-  z.object({
-    type: z.literal(MessageType.Summarize),
+  v.object({
+    type: v.literal(MessageType.Summarize),
   }),
-  z.object({
-    type: z.literal(MessageType.SummarizeError),
-    payload: z.object({
-      message: z.string(),
+  v.object({
+    type: v.literal(MessageType.SummarizeError),
+    payload: v.object({
+      message: v.string(),
     }),
   }),
 ]);
+
+export type TMessage = v.InferOutput<typeof Message>;

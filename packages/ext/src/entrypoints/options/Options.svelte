@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from '#imports';
   import OptionsMain from 'srv/components/options/OptionsMain.svelte';
-  import { OvalExtOptionsSchema } from 'srv/components/options/schema';
+  import { OvalExtOptionsSchema, parseWith } from 'srv/components/options/schema';
   import { llmProvider, targetLanguage } from 'srv/components/options/state.svelte';
   import { STORAGE_KEY } from '@/utils/constant';
   import { onMount } from 'svelte';
@@ -13,7 +13,7 @@
       .get([STORAGE_KEY.LlmProvider, STORAGE_KEY.targetLanguage])
       .then((result) => {
         try {
-          const parsed = OvalExtOptionsSchema.parse(result);
+          const parsed = parseWith(OvalExtOptionsSchema, result);
           if (parsed.llmProvider) {
             llmProvider.providers = parsed.llmProvider.providers;
             llmProvider.activeKey = parsed.llmProvider.activeKey;

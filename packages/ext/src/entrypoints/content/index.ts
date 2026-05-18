@@ -5,8 +5,8 @@ import {
   defineContentScript,
 } from '#imports';
 import Defuddle from 'defuddle';
-import * as z from 'zod';
-import { Message, MessageType } from '@/utils/message';
+import * as v from 'valibot';
+import { Message, MessageType, type TMessage } from '@/utils/message';
 
 import './style.css';
 
@@ -77,7 +77,7 @@ function armListeners() {
 
   browser.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener((m, port) => {
-      const msg = Message.parse(m);
+      const msg = v.parse(Message, m);
       log.debug(`content: got message "${msg.type}"`);
       switch (msg.type) {
         case MessageType.Screenshot: {
@@ -93,7 +93,7 @@ function armListeners() {
           port.postMessage({
             type: MessageType.Article,
             payload: { content: result.content, title: result.title },
-          } satisfies z.infer<typeof Message>);
+          } satisfies TMessage);
 
           break;
         }

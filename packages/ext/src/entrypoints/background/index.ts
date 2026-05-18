@@ -1,11 +1,11 @@
 import { type Browser, browser, defineBackground } from '#imports';
-import { Message, MessageType } from '@/utils/message';
-import * as z from 'zod';
+import { Message, MessageType, type TMessage } from '@/utils/message';
+import * as v from 'valibot';
 import { GeminiService, SummaryService, OvalService } from 'srv';
 import { log } from '@/utils/logger';
 import { generate } from 'srv';
 import { sleep } from 'srv';
-import { OvalExtOptionsSchema, TProviderOptions } from 'srv';
+import { OvalExtOptionsSchema, safeParseWith, TProviderOptions } from 'srv';
 import {
   PROVIDER_DEFAULTS,
   PROVIDER_GOOGLE_GEMINI,
@@ -38,7 +38,7 @@ async function sendScreenshot(port: Browser.runtime.Port) {
   port.postMessage({
     type: MessageType.Screenshot,
     payload: { b64ImgSrc },
-  } satisfies z.infer<typeof Message>);
+  } satisfies TMessage);
 }
 
 function generateMockSummary() {
@@ -103,7 +103,7 @@ async function handleArticleMessage(
     STORAGE_KEY.targetLanguage,
   ]);
 
-  const result = OvalExtOptionsSchema.safeParse(stored);
+  const result = safeParseWith(OvalExtOptionsSchema, stored);
   const parsed = result.success ? result.data : undefined;
   const lang = await getTargetLanguage(parsed?.targetLanguage);
   let ai: AsyncIterable<string> | undefined;
@@ -135,7 +135,7 @@ async function handleArticleMessage(
       port.postMessage({
         type: MessageType.TextChunk,
         payload: { text },
-      } satisfies z.infer<typeof Message>);
+      } satisfies TMessage);
     }
     log.debug(t);
   } catch (e) {
@@ -203,7 +203,7 @@ async function handleArticleMessage(
     port.postMessage({
       type: MessageType.SummarizeError,
       payload: { message },
-    } satisfies z.infer<typeof Message>);
+    } satisfies TMessage);
   }
 }
 
@@ -212,7 +212,7 @@ function armListenersOnPort(port: Browser.runtime.Port) {
     log.info('background: port disconnected');
   });
   port.onMessage.addListener((m, port) => {
-    const msg = Message.parse(m);
+    const msg = v.parse(Message, m);
     log.info(`background: got message "${msg.type}"`);
     switch (msg.type) {
       case MessageType.Article: {
@@ -238,7 +238,7 @@ async function start() {
 
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener((m, _sender, reply) => {
-    const msg = Message.parse(m);
+    const msg = v.parse(Message, m);
     switch (msg.type) {
       case MessageType.Summarize: {
         start().then(() => reply());

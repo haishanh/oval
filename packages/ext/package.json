@@ -22,7 +22,7 @@
     "defuddle": "0.18.1",
     "srv": "workspace:*",
     "tailwindcss": "^4.3.0",
-    "zod": "^4.3.5"
+    "valibot": "^1.1.0"
   },
   "devDependencies": {
     "prettier-plugin-svelte": "3.5.2",
