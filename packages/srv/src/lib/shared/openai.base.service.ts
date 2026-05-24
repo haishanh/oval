@@ -67,7 +67,14 @@ export class OpenaiBaseService {
       content: string;
       role: string;
     }[],
-    opts?: { model?: string } & unknown,
+    // {"thinking": {"type": "enabled/disabled"}}
+    opts?: {
+      model?: string;
+      // DeepSeek
+      thinking?: {
+        type: 'enabled' | 'disabled';
+      };
+    } & unknown,
   ) {
     const input = {
       messages,

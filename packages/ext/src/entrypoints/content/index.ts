@@ -17,6 +17,15 @@ import { log } from '@/utils/logger';
 import { summa, isLoading, summarizeError } from 'srv/components/summa.svelte';
 
 const restore = createRestore();
+const OVAL_CONTENT_SCRIPT_KEY = '__ovalContentScript';
+
+declare global {
+  interface Window {
+    __ovalContentScript?: {
+      initialized: boolean;
+    };
+  }
+}
 
 const handleClose = () => {
   restore.restore();
@@ -32,12 +41,18 @@ function handleKeyDown(e: KeyboardEvent) {
 
 export default defineContentScript({
   matches: ['<all_urls>'],
+  registration: 'runtime',
   cssInjectionMode: 'ui',
 
   async main(ctx) {
+    if (window[OVAL_CONTENT_SCRIPT_KEY]?.initialized) {
+      return;
+    }
+
     armListeners();
     const ui = await createUi(ctx);
     ui.mount();
+    window[OVAL_CONTENT_SCRIPT_KEY] = { initialized: true };
   },
 });
 
@@ -81,6 +96,9 @@ function armListeners() {
       log.debug(`content: got message "${msg.type}"`);
       switch (msg.type) {
         case MessageType.Screenshot: {
+          isLoading.value = true;
+          summa.text = '';
+          summarizeError.current = '';
           screenshot.b64ImgSrc = msg.payload.b64ImgSrc;
 
           restore.append(preventScroll());

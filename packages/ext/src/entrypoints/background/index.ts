@@ -21,6 +21,7 @@ import { NvidiaAiService } from 'srv';
 import { OpenaiBaseService } from 'srv';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
+const CONTENT_SCRIPT_FILE = 'content-scripts/content.js';
 
 async function getActiveTab() {
   const [tab] = await browser.tabs.query({
@@ -39,6 +40,31 @@ async function sendScreenshot(port: Browser.runtime.Port) {
     type: MessageType.Screenshot,
     payload: { b64ImgSrc },
   } satisfies TMessage);
+}
+
+async function hasInjectedContentScript(tabId: number) {
+  const [result] = await browser.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      return Boolean(
+        (window as Window & { __ovalContentScript?: { initialized: boolean } }).__ovalContentScript
+          ?.initialized,
+      );
+    },
+  });
+
+  return result?.result === true;
+}
+
+async function ensureContentScriptInjected(tabId: number) {
+  if (await hasInjectedContentScript(tabId)) {
+    return;
+  }
+
+  await browser.scripting.executeScript({
+    target: { tabId },
+    files: [CONTENT_SCRIPT_FILE],
+  });
 }
 
 function generateMockSummary() {
@@ -137,7 +163,7 @@ async function handleArticleMessage(
         payload: { text },
       } satisfies TMessage);
     }
-    log.debug(t);
+    log.info(t);
   } catch (e) {
     console.log(e);
 
@@ -230,6 +256,7 @@ function armListenersOnPort(port: Browser.runtime.Port) {
 async function start() {
   log.debug('start');
   const [tabId] = await getActiveTab();
+  await ensureContentScriptInjected(tabId);
   const port = browser.tabs.connect(tabId);
   armListenersOnPort(port);
   // send screenshot data to kick the process
@@ -241,7 +268,11 @@ export default defineBackground(() => {
     const msg = v.parse(Message, m);
     switch (msg.type) {
       case MessageType.Summarize: {
-        start().then(() => reply());
+        start()
+          .catch((error: unknown) => {
+            log.warn('Failed to start summarize flow', error);
+          })
+          .finally(() => reply());
         return true;
       }
 

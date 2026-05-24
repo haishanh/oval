@@ -79,7 +79,9 @@ export class SummaryService {
             { role: 'system', content: instruction },
             { role: 'user', content: user },
           ];
-          const res = await llm.complete(messages);
+          const res = await llm.complete(messages, {
+            thinking: { type: 'disabled' },
+          });
           const aig = OpenaiBaseService.createAsyncIterableTextStreamFromResponse(res);
           for await (const chunk of aig) {
             yield chunk;

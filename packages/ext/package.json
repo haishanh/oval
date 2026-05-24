@@ -1,7 +1,7 @@
 {
   "name": "ext",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -16,7 +16,7 @@
   "dependencies": {
     "@lucide/svelte": "1.16.0",
     "@tailwindcss/vite": "4.3.0",
-    "@tanstack/svelte-query": "6.1.29",
+    "@tanstack/svelte-query": "6.1.33",
     "@wxt-dev/module-svelte": "2.0.5",
     "@wxt-dev/webextension-polyfill": "^1.0.0",
     "defuddle": "0.18.1",
@@ -25,9 +25,9 @@
     "valibot": "^1.1.0"
   },
   "devDependencies": {
-    "prettier-plugin-svelte": "3.5.2",
+    "prettier-plugin-svelte": "4.0.1",
     "prettier-plugin-tailwindcss": "0.8.0",
-    "sass-embedded": "1.99.0",
+    "sass-embedded": "1.100.0",
     "typescript": "^6.0.3",
     "wxt": "^0.20.26"
   }

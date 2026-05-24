@@ -2,7 +2,7 @@ import parent from '../../prettier.config.mjs';
 
 const config = {
   ...parent,
-  tailwindStylesheet: './src/routes/layout.css',
+  tailwindStylesheet: './src/lib/style.css',
 };
 
 export default config;
