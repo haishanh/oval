@@ -74,6 +74,10 @@ export class OpenaiBaseService {
       thinking?: {
         type: 'enabled' | 'disabled';
       };
+      // DeepSeek
+      response_format?: {
+        type: 'json_object';
+      };
     } & unknown,
   ) {
     const input = {

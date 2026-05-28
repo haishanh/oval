@@ -5,16 +5,24 @@ import assert from 'node:assert';
   const apiKey = process.env.DEEPSEEK_API_KEY;
   assert(apiKey);
   const client = new OpenaiBaseService({ apiKey, baseUrl: 'https://api.deepseek.com', model: 'deepseek-v4-flash' });
-  const res = await client.complete([
+  const res = await client.complete(
+    [
+      {
+        role: 'system',
+        content: 'You are a tech-savvy writer.',
+      },
+      {
+        role: 'user',
+        content:
+          'Write a poem on Bitcoin. Your ouput shoule be a JSON. Example JSON ouput: { "title": "Title of the poem", "lines": ["line1", "line2"] }',
+      },
+    ],
     {
-      role: 'system',
-      content: 'You are a tech-savvy writer.',
+      response_format: {
+        type: 'json_object',
+      },
     },
-    {
-      role: 'user',
-      content: 'Write a poem on Bitcoin',
-    },
-  ]);
+  );
 
   const ai = OpenaiBaseService.createAsyncIterableTextStreamFromResponse(res);
   for await (const chunk of ai) {

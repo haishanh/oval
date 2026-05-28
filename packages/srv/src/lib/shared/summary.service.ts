@@ -81,6 +81,7 @@ export class SummaryService {
           ];
           const res = await llm.complete(messages, {
             thinking: { type: 'disabled' },
+            response_format: { type: 'json_object' },
           });
           const aig = OpenaiBaseService.createAsyncIterableTextStreamFromResponse(res);
           for await (const chunk of aig) {

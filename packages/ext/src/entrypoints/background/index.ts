@@ -21,7 +21,8 @@ import { NvidiaAiService } from 'srv';
 import { OpenaiBaseService } from 'srv';
 
 const ovalApiKey = import.meta.env.VITE_OVAL_API_KEY;
-const CONTENT_SCRIPT_FILE = 'content-scripts/content.js';
+const ovalBaseUrl = import.meta.env.VITE_OVAL_BASE_URL as string | undefined;
+const CONTENT_SCRIPT_FILE = '/content-scripts/content.js';
 
 async function getActiveTab() {
   const [tab] = await browser.tabs.query({
@@ -150,6 +151,7 @@ async function handleArticleMessage(
         apiKey: ovalApiKey,
         // When developing - use local Oval API
         // baseUrl: 'http://localhost:8787',
+        ...(ovalBaseUrl ? { baseUrl: ovalBaseUrl } : undefined),
       });
       const res = await ovalSvc.generate({ content: article.content, title: article.title, lang });
       ai = OvalService.createAsyncIterableTextStreamFromResponse(res);

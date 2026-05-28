@@ -1,5 +1,5 @@
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'wxt';
+import { defineConfig, UserConfig } from 'wxt';
 import path from 'node:path';
 
 // See https://wxt.dev/api/config.html
@@ -11,7 +11,7 @@ export default defineConfig({
     'build:manifestGenerated': (_wxt, manifest) => {
       if (!manifest.host_permissions) return;
       manifest.host_permissions = manifest.host_permissions.filter(
-        (permission) => permission !== '<all_urls>',
+        (permission: string) => permission !== '<all_urls>',
       );
       if (manifest.host_permissions.length === 0) {
         delete manifest.host_permissions;
@@ -42,4 +42,4 @@ export default defineConfig({
       128: '/icon/oval-128.png',
     },
   },
-});
+} as UserConfig);
